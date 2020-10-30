@@ -2,19 +2,19 @@
   <div class="page-farmer-info">
     <group>
       <div class="inline">
-        <x-input placeholder="请输入客户手机号" v-model="form.phone"></x-input>
+        <x-input id="style1" placeholder="请输入客户手机号" v-model="form.phone"></x-input>
         <div class="check-repeat">查重</div>
       </div>
     </group>
     <group title="基础信息">
-      <x-input class="input-required" title="客户名称" placeholder="点击填写" text-align="right" v-model="form.custormer" required></x-input>
-      <popup-picker title="客户性别" placeholder="点击选择" v-model="value1" :data=list></popup-picker>
+      <x-input id="style2" @on-focus="style2='color:#333'" class="input-required" :title='`<span style="${style2}">客户姓名</span>`' placeholder="点击填写" text-align="right" v-model="form.customerName" required></x-input>
+      <popup-picker ref="picker1" title="客户性别" placeholder="点击选择" @on-change="pickerChange" :value="sex" :data=sys_user_sex></popup-picker>
       <div class="inline border-top">
-        <x-address style="flex:1;" class="required left-padding" title="经营地区" v-model="value1" :list="addressData" placeholder="点击选择"></x-address>
+        <x-address id="style3" @on-show="style3='color:#333'" :title='`<span style="${style3}">经营地区</span>`' style="flex:1;" class="required left-padding" v-model="value1" :list="addressData" placeholder="点击选择"></x-address>
         <div class="map-button">定位</div>
       </div>
       <x-input class="input-required" title="详细经营地址" placeholder="点击填写" text-align="right" v-model="form.custormer" required></x-input>
-      <popup-picker class="required" title="客户意向" placeholder="点击选择" v-model="value1" :data=list></popup-picker>
+      <popup-picker ref="picker2" @click.native="clickPicker('picker2', 'customerState')" class="required" title="客户意向" placeholder="点击选择" @on-change="pickerChange" :value="customerState" :data=customer_intention></popup-picker>
       <popup-picker class="required" title="客户来源" placeholder="点击选择" v-model="value1" :data=list></popup-picker>
       <popup-picker class="required person" title="归属人员" placeholder="点击选择" v-model="value1" :data=list></popup-picker>
     </group>
@@ -23,12 +23,12 @@
       <group title="经营历史">
         <div class="inline">
           <div class="div-required">时间</div>
-          <checker class="checker-line" v-model="demo1" @on-change="checkerChange" default-item-class="checker" selected-item-class="checker-selected">
+          <checker class="checker-line" v-model="demo1" default-item-class="checker" selected-item-class="checker-selected">
             <checker-item value="1">2020</checker-item>
             <checker-item value="2">2019</checker-item>
             <checker-item value="3">2018</checker-item>
             <checker-item value="4">2017</checker-item>
-            <checker-item value="0">更多</checker-item>
+            <checker-item value="0" @click.native="moreYearChange">更多</checker-item>
           </checker>
         </div>
         <popup-picker title="种植季" placeholder="点击选择" v-model="value1" :data=list></popup-picker>
@@ -38,14 +38,14 @@
         <popup-picker title="种植种类" placeholder="点击选择" v-model="value1" :data=list></popup-picker>
         <div class="upload-title">经营照片</div>
         <div class="upload-line">
-          <file-upload v-show="form.fileList.length==0" accept="image/*" ref="upload" @input-file="inputFile" @input-filter="inputFilter" v-model="form.fileList">
+          <file-upload v-show="form[fileListName].length==0" accept="image/*" ref="upload" @click.native="clickUpload(0)" @input-file="inputFile" @input-filter="inputFilter" v-model="form.fileList">
             <div class="upload-button">
               <div class="upload-icon"></div>
               <div class="upload-text">上传</div>
             </div>
           </file-upload>
-          <div class="upload-preview" v-show="form.fileList.length>0">
-            <img @click="showPreview('data:image/png;base64,'+form.fileList[0].fileBase64Content)" class="preview-image" v-if="form.fileList[0]&&form.fileList[0].fileBase64Content" :src="'data:image/png;base64,'+form.fileList[0].fileBase64Content" />
+          <div class="upload-preview" v-show="form[fileListName].length>0">
+            <img @click="showPreview(form[fileListName])" class="preview-image" v-if="form.fileList[0]&&form.fileList[0].fileBase64Content" :src="'data:image/png;base64,'+form.fileList[0].fileBase64Content" />
             <div class="close-image" v-if="form.fileList[0]&&form.fileList[0].fileBase64Content" @click="removeImage"></div>
           </div>
           <div class="upload-demo" @click="showPreview(demoImage)">
@@ -60,7 +60,10 @@
       <div class="weui-cell">备注信息</div>
       <x-textarea name="description" placeholder="请输入备注信息"></x-textarea>
     </group>
-    <x-button action-type="submit">完成</x-button>
+    <div class="inline-button">
+      <x-button plain>取消</x-button>
+      <x-button class="save-button" type="primary" @click.native="save">保存</x-button>
+    </div>
     <div v-transfer-dom>
       <popup v-model="moreYear" position="bottom" @popup-header-height=0>
         <popup-header
@@ -101,13 +104,38 @@ export default {
   data () {
     return {
       form: {
+        sex: [],
         phone: '',
-        custormer: '',
+        customerName: '',
+        customerState: [],
         fileList: []
       },
+      sex: [],
+      customerState: [],
+      fileUrlList: [],
       value: '',
       value1: [],
       list: [['男', '女']],
+      sys_user_sex: [[{
+        name: '男',
+        value: '0'
+      }, {
+        name: '女',
+        value: '1'
+      }]],
+      customer_intention: [[{
+        name: '需进一步跟进',
+        value: '1'
+      }, {
+        name: '意向强',
+        value: '2'
+      }, {
+        name: '意向一般',
+        value: '3'
+      }, {
+        name: '意向弱',
+        value: '4'
+      }]],
       options: [{
         key: 'KEY', 
         value: 'VALUE'
@@ -123,11 +151,40 @@ export default {
       demoImage: 'https://m.360buyimg.com/jrqb/jfs/t1/153403/4/3991/173788/5f9a7e32Efd280cbc/5fe9daee856512ba.png',
       scanImageCss: false,
       showDialog: false,
-      preImg: ''
+      preImg: '',
+      style1: '',
+      style2: '',
+      style3: '',
+      chooseRef: '',
+      chooseProp: '',
+      fileListName: 'fileList',
+      chooseFile: -1
     }
   },
   methods: {
-    showPreview(img) {
+    clickUpload() {
+      this.chooseFile = 0
+    },
+    clickPicker(name, prop) {
+      this.chooseRef = name
+      this.chooseProp = prop
+    },
+    pickerChange(value) {
+      this.$refs[this.chooseRef].getNameValues() && (this[this.chooseProp] = [this.$refs[this.chooseRef].getNameValues()])
+      this.$refs[this.chooseRef].getNameValues() && (this.form[this.chooseProp] = value)
+    },
+    moreChange() {
+      console.log(333)
+    },
+    save() {
+      console.log(this.form.customerState)
+      this.$nextTick(() => {
+        document.getElementById("style3").scrollIntoView()
+        this.style3 = 'color:red;'
+      })
+    },
+    showPreview(fileList) {
+      let img = 'data:image/png;base64,'+fileList[0].fileBase64Content
       this.showDialog = true
       this.preImg = img
     },
@@ -179,8 +236,8 @@ export default {
         }
       })
     },
-    checkerChange(value) {
-      value === '0' && (this.moreYear = true)
+    moreYearChange() {
+      this.moreYear = true
     },
     showAlert() {
       console.log(this.form)
@@ -480,6 +537,15 @@ export default {
       margin-top: 2px;
     }
   }
-  
+  .inline-button {
+    display: flex;
+    margin: 15px;
+    .weui-btn + .weui-btn {
+      margin-top: 0 !important;
+    }
+    .save-button {
+      margin-left: 20px;
+    }
+  }
 }
 </style>
