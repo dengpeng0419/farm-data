@@ -8,18 +8,18 @@
     </group>
     <group title="基础信息">
       <x-input id="style2" @on-focus="style2='color:#333'" class="s-input-required" :title='`<span style="${style2}">客户姓名</span>`' placeholder="点击填写" text-align="right" v-model="form.customerName" required></x-input>
-      <popup-picker ref="picker1" @click.native="clickPicker('picker1', 'sex')" title="客户性别" placeholder="点击选择" @on-change="pickerChange" :value="sex" :data=sys_user_sex></popup-picker>
+      <popup-picker  title="客户性别" placeholder="点击选择" show-name v-model="form.sex" :data=sys_user_sex></popup-picker>
       <div class="inline border-top">
-        <x-address id="style3" @on-show="style3='color:#333'" :title='`<span style="${style3}">经营地区</span>`' style="flex:1;" class="required left-padding" v-model="form.address" :list="addressData" placeholder="点击选择"></x-address>
+        <x-address id="style3" @on-show="style3='color:#333'" @on-shadow-change="showForm" :title='`<span style="${style3}">经营地区</span>`' style="flex:1;" class="required left-padding" v-model="form.address" :list="addressData" placeholder="点击选择"></x-address>
         <div class="map-button" @click="openMapView">定位</div>
       </div>
       <x-input id="style4" @on-focus="style4='color:#333'" class="input-required" :title='`<span style="${style4}">详细经营地址</span>`' placeholder="点击填写" text-align="right" v-model="form.detail" required></x-input>
-      <popup-picker id="style5" @on-show="style5='color:#333'" ref="picker2" @click.native="clickPicker('picker2', 'customerState')" class="required" 
-        :title='`<span style="${style5}">客户意向</span>`' placeholder="点击选择" @on-change="pickerChange" :value="customerState" :data=customer_intention></popup-picker>
-      <popup-picker id="style6" @on-show="style6='color:#333'" ref="picker3" @click.native="clickPicker('picker3', 'source')" class="required" 
-        :title='`<span style="${style6}">客户来源</span>`' placeholder="点击选择" @on-change="pickerChange" :value="source" :data=customer_source></popup-picker>
-      <popup-picker id="style7" @on-show="style7='color:#333'" ref="picker4" @click.native="clickPicker('picker4', 'maintainMan')" class="required person" 
-        :title='`<span style="${style7}">归属人员</span>`' placeholder="点击选择" @on-change="pickerChange" :value="maintainMan" :data=personList></popup-picker>
+      <popup-picker id="style5" @on-show="style5='color:#333'" class="required" show-name
+        :title='`<span style="${style5}">客户意向</span>`' placeholder="点击选择" v-model="form.customerState" :data=customer_intention></popup-picker>
+      <popup-picker id="style6" @on-show="style6='color:#333'" class="required" show-name
+        :title='`<span style="${style6}">客户来源</span>`' placeholder="点击选择" v-model="form.source" :data=customer_source></popup-picker>
+      <popup-picker id="style7" @on-show="style7='color:#333'" class="required person" show-name
+        :title='`<span style="${style7}">归属人员</span>`' placeholder="点击选择" v-model="form.maintainMan" :data=personList></popup-picker>
     </group>
     <div style="position:relative">
       <div class="add-group" @click="addHistory">添加经营历史</div>
@@ -34,13 +34,13 @@
             <checker-item value="0" @click.native="moreYearChange(index)">更多</checker-item>
           </checker>
         </div>
-        <popup-picker title="种植季" placeholder="点击选择" v-model="uploadForm[index].operateQuarter" :data=plant_quarter></popup-picker>
+        <popup-picker title="种植季" placeholder="点击选择" show-name v-model="uploadForm[index].operateQuarter" :data=plant_quarter></popup-picker>
         <x-input :id="`style02${index}`" @on-focus="uploadForm[index].style2='color:#333'"  class="s-input-required" :title='`<span style="${uploadForm[index].style2}">包种亩数</span>`' 
           placeholder="点击填写" text-align="right" v-model="uploadForm[index].operateNum" required></x-input>
-        <popup-picker :id="`style03${index}`" @on-show="uploadForm[index].style3='color:#333'" class="required" :title='`<span style="${uploadForm[index].style3}">种植类型</span>`' 
+        <popup-picker :id="`style03${index}`" show-name @on-show="uploadForm[index].style3='color:#333'" class="required" :title='`<span style="${uploadForm[index].style3}">种植类型</span>`' 
           placeholder="点击选择" v-model="uploadForm[index].plantingType" :data=planting_type></popup-picker>
         <x-input title="平均单亩租金" placeholder="点击填写" text-align="right" v-model="uploadForm[index].averageRent" required></x-input>
-        <popup-picker title="种植种类" placeholder="点击选择" v-model="uploadForm[index].plantingSubType" :data=planting_sub_type></popup-picker>
+        <popup-picker title="种植种类" placeholder="点击选择" show-name v-model="uploadForm[index].plantingSubType" :data=planting_sub_type></popup-picker>
         <div class="upload-title">经营照片</div>
         <div class="upload-line">
           <file-upload v-show="!uploadForm[index].fileList" accept="image/*" ref="upload" @click.native="clickUpload(index)" @input-file="inputFile" @input-filter="inputFilter">
@@ -61,7 +61,7 @@
         <div class="delete-line" @click="deleteLine(index)" v-if="index>0">删除经营历史</div>
       </group>
     </div>
-    <group title="经营履历">
+    <group title="经营履历">  
       <x-input title="总经营年限" placeholder="点击填写" text-align="right" v-model="form.operateDuration"></x-input>
       <div class="weui-cell">备注信息</div>
       <x-textarea name="description" placeholder="请输入备注信息" v-model="form.remark"></x-textarea>
@@ -105,7 +105,7 @@
           <bm-view style="width: 100%; height:100vh;"></bm-view>
           <bm-local-search :keyword="addressKeyword" :auto-viewport="true" style="display: none"></bm-local-search>
         </baidu-map>
-        <div style="position:absolute; bottom:0: left:0; width: 100%; background:#fff; padding:10px;">{{address}}</div>
+        <div style="position:absolute; bottom:0; left:0; width: 100%; background:#fff; padding:10px;">{{address}}</div>
       </popup>
     </div>
   </div>
@@ -115,6 +115,7 @@
 import { ChinaAddressV4Data, TransferDom } from 'vux'
 import FileUpload from 'vue-upload-component'
 import Compressimg from '@/components/Compressimg'
+import Upload from '@/components/upload'
 
 export default {
   name: 'HelloWorld',
@@ -135,7 +136,6 @@ export default {
         detail: '',
         source: [],
         maintainMan: [],
-        fileList: [],
         operateDuration: '',
         remark: ''
       },
@@ -151,14 +151,7 @@ export default {
         style2: '',
         style3: ''
       }],
-      sex: [],
-      customerState: [],
-      source: [],
-      maintainMan: [],
       fileUrlList: [],
-      value: '',
-      value1: [],
-      list: [['男', '女']],
       sys_user_sex: [[{
         name: '男',
         value: '0'
@@ -209,20 +202,42 @@ export default {
       }]],
       personList: [[{
         name: '赵小刚',
-        value:  '233'
+        value:  '1'
       }]],
-      plant_quarter: [['第一季','第二季','第三季']],
-      planting_type: [['粮食作物','经济作物']],
-      planting_sub_type: [['禾谷类作物','豆类作物','薯芋类作物','纤维作物','油料作物',]],
-      options: [{
-        key: 'KEY', 
-        value: 'VALUE'
+      plant_quarter: [[{
+        name: '第一季',
+        value: '1'
       }, {
-        key: 'KEY2', 
-        value: 'VALUE2'
-      }],
+        name: '第二季',
+        value: '2'
+      }, {
+        name: '第三季',
+        value: '3'
+      }]],
+      planting_type: [[{
+        name:'粮食作物',
+        value: '1'
+      }, {
+        name: '经济作物',
+        value: '2'
+      }]],
+      planting_sub_type: [[{
+        name: '禾谷类作物',
+        value: '1'
+      }, {
+        name: '豆类作物',
+        value: '2'
+      }, {
+        name: '薯芋类作物',
+        value: '3'
+      }, {
+        name: '纤维作物',
+        value: '4'
+      }, {
+        name: '油料作物',
+        value: '5'
+      }]],
       addressData: ChinaAddressV4Data,
-      demo1: '',
       moreYear: false,
       moreYearOne: [],
       moreYearList: [['2020','2019']],
@@ -237,7 +252,7 @@ export default {
       style5: '',
       style6: '',
       style7: '',
-      checkStyle: ['phone', 'customerName', 'customerState', 'address', 'detail', 'source', 'maintainMan'],
+      checkStyle: ['phone', 'customerName', 'address', 'detail', 'customerState', 'source', 'maintainMan'],
       chooseRef: '',
       chooseProp: '',
       fileListName: 'fileList',
@@ -249,7 +264,7 @@ export default {
       },
       zoom: 12.8,
       addressKeyword: '',
-      address: '123',
+      address: '',
       district: "江宁区", 
       city: "南京市", 
       province: "江苏省",
@@ -257,16 +272,33 @@ export default {
     }
   },
   mounted() {
-    this.getPageData()
+    if (this.$route.name === 'FarmerInfo') {
+      this.getPageData()
+    }
   },
   methods: {
+    showForm() {
+      console.log(this.form)
+    },
     checkRepeat(phone) {
       const reg = /^1\d{10}$/
       if (!phone) {
         this.showAlert('请输入手机号')
       } else if (!reg.test(phone)) {
         this.showAlert('请输入正确的手机号')
+      } else {
+        this.checkPhone(phone)
       }
+    },
+    checkPhone(phone) {
+      this.$axios({
+        url: this.urls().checkPhone+'?phoneNum='+phone+'&tableNum=1'
+      }).then(json => {
+        console.log(json)
+        // this.uploadForm[this.chooseFile].fileUrl = json
+      }).catch(err => {
+        this.pageShow = true
+      })
     },
     openMapView() {
       let geolocation = new BMap.Geolocation()
@@ -295,7 +327,18 @@ export default {
       })
     },
     addHistory() {
-      this.uploadForm.push({style1: ''})
+      this.uploadForm.push({
+        operateYear: '',
+        operateQuarter: [],
+        operateNum: '',
+        plantingType: [],
+        averageRent: '',
+        plantingSubType: [],
+        fileList: '',
+        style1: '',
+        style2: '',
+        style3: ''
+      })
     },
     deleteLine(index) {
       this.uploadForm.splice(index, 1)
@@ -306,13 +349,6 @@ export default {
     clickPicker(name, prop) {
       this.chooseRef = name
       this.chooseProp = prop
-    },
-    pickerChange(value) {
-      this.$refs[this.chooseRef].getNameValues() && (this[this.chooseProp] = [this.$refs[this.chooseRef].getNameValues()])
-      this.$refs[this.chooseRef].getNameValues() && (this.form[this.chooseProp] = value)
-    },
-    moreChange() {
-      console.log(333)
     },
     save() {
       let error = false
@@ -337,8 +373,65 @@ export default {
           !error && document.getElementById(`style03${j}`).scrollIntoView()
           error = true
           this.uploadForm[j].style3 = 'color: red'
-        }
+        } 
       }
+      error == false && this.saveForm()
+    },
+    saveForm() {
+      const operateInfoDetails = []
+      this.uploadForm.map(item => {
+        const obj = {}
+        obj.operateYear = item.operateYear
+        obj.operateQuarter = item.operateQuarter[0]
+        obj.operateNum = item.operateNum
+        obj.plantingType = item.plantingType[0]
+        obj.averageRent = item.averageRent
+        obj.plantingSubType = item.plantingSubType[0]
+        obj.operatePictureUrl = item.fileList
+        operateInfoDetails.push(obj)
+      })
+      const data = {
+        customerId: 1,
+        addressList: [{
+          addressType : 4,
+          city: this.form.address[1],
+          detail: this.form.detail,
+          district: this.form.address[2],
+          latitude: 0,
+          longitude: 0,
+          province: this.form.address[0],
+          remark: '',
+          town: 'string',
+          village: 'string',
+          addressLevel: 3
+        }],
+        customerName: this.form.customerName,
+        customerState: this.form.customerState[0],
+        customerType: this.form.customerType,
+        maintainMan: this.form.maintainMan[0],
+        operateInfo: {
+          operateInfold: this.form.operateInfoId,
+          operateDuration: this.form.operateDuration,
+          operateRemark: this.form.remark
+        },
+        operateInfoDetails: operateInfoDetails,
+        phone: this.form.phone,
+        remark: this.form.remark,
+        sex: this.form.sex[0],
+        source: this.form.source[0]
+      }
+
+      this.$axios({
+        url: this.urls().save,
+        data: data
+      }).then(json => {
+        this.$router.replace({
+          name: 'FarmerList'
+        })
+        // this.uploadForm[this.chooseFile].fileUrl = json
+      }).catch(err => {
+        this.pageShow = true
+      })
     },
     showPreview(fileList) {
       this.showDialog = true
@@ -381,18 +474,38 @@ export default {
     },
     // 压缩文件
     compressFile(files) {
+      console.log(files)
       Compressimg.compress(files, {
         size: 512000,
         quality: 80,
         callback: (dataUrl) => {
-          // this.form.fileList = [{
-          //   fileBase64Content: dataUrl.split(',')[1]
-          // }]
+          console.log(dataUrl)
+          const ab = Upload.blobutil.base64ToArrayBuffer(dataUrl);
+          if (ab.length >= 4096000) {
+              this.showAlert('图片不能超过4M，请重新选择');
+              return;
+          }
+          // const blob = Upload.blobutil.Blob([ab], {
+          //     type: 'image/jpeg'
+          // });
+          // data.append('files', blob);
+          const data = new FormData();
+          data.append('files', files);
           this.uploadForm[this.chooseFile].fileList = dataUrl.split(',')[1]
           this.uploadForm = JSON.parse(JSON.stringify(this.uploadForm))
-          this.scanImageCss = true
-          // this.uploadFile(dataUrl)
+          this.uploadFile(data)
         }
+      })
+    },
+    uploadFile(data) {
+      this.$axios({
+        contentType: false,
+        url: this.urls().upload,
+        data: data
+      }).then(json => {
+        this.uploadForm[this.chooseFile].fileUrl = json
+      }).catch(err => {
+        this.pageShow = true
       })
     },
     getOperateYear(value) {
@@ -421,30 +534,66 @@ export default {
     },
     getPageData() {
       this.$axios({
-        url: this.urls().init,
-        data: {
-          ssl: true
-        }
+        url: this.urls().init
       }).then(json => {
         const data = json || {}
         this.handleInitPage(data)
       }).catch(err => {
         this.pageShow = true
-        if (err.code === 'PC00010') {
-          this.errorCode = '400'
-          this.pageError = '您还没有开通银行卡，点击选购喜欢的产品，完成银行开户吧'
-        } else {
-          this.pageError = err.msg
-        }
       })
     },
     handleInitPage(data) {
-
+      console.log(data)
+      this.form.sex = [data.sex + '']
+      this.form.phone = data.phone
+      this.form.customerName = data.customerName
+      this.form.customerState = [data.customerState + '']
+      this.form.address = [data.addressList[0].province, data.addressList[0].city, data.addressList[0].district]
+      this.form.detail = data.addressList[0].detail
+      this.form.source = [data.source + '']
+      this.form.maintainMan = [data.maintainMan + '']
+      this.form.operateDuration = data.operateInfo.operateDuration
+      this.form.remark = data.operateInfo.operateRemark
+      this.form.operateInfoId = data.operateInfo.operateInfoId
+      const history = data.operateInfoDetails || []
+      for(let i = 0; i < history.length - 1; i++) {
+        i > 0 && this.uploadForm.push({
+          operateYear: '',
+          operateQuarter: [],
+          operateNum: '',
+          plantingType: [],
+          averageRent: '',
+          plantingSubType: [],
+          fileList: '',
+          style1: '',
+          style2: '',
+          style3: ''
+        })
+      }
+      history.map((item, index) => {
+        this.uploadForm[index].averageRent = item.averageRent
+        this.uploadForm[index].operateYear = item.operateYear
+        this.uploadForm[index].operateQuarter = [item.operateQuarter + '']
+        this.uploadForm[index].operateNum = item.operateNum
+        this.uploadForm[index].plantingType = [item.plantingType + '']
+        this.uploadForm[index].averageRent = item.averageRent
+        this.uploadForm[index].plantingSubType = [item.plantingSubType + '']
+      })
+    },
+    getListName(value) {
+      this.sys_user_sex.map(item => {
+        if (item.value == value) {
+          return item.name
+        }
+      })
     },
     urls() {
       return {
-        init: `http://thegisguy.cn:8085/system/point/edit/1`,
-        upload: `${process.env.URL.api}upload`,
+        init: `http://thegisguy.cn:8085/system/customer/queryOne?customerId=1`,
+        upload: `http://thegisguy.cn:8085/commom/file/uploadPhoto`,
+        save: `http://thegisguy.cn:8085/system/customer/edit`,
+        checkPhone: `http://thegisguy.cn:8085/util/exist`
+        // upload: `${process.env.URL.api}upload`,
       }
     }
   }
@@ -469,7 +618,7 @@ export default {
       width: 20px;
       height: 20px;
       border-radius: 50%;
-      background-image: url(../assets/img/icon_search.png);
+      background-image: url(../../assets/img/icon_search.png);
       background-size: 100% 100%;
       background-repeat: no-repeat;
     }
@@ -515,7 +664,7 @@ export default {
         width: 12px;
         height: 12px;
         border-radius: 50%;
-        background-image: url(../assets/img/icon_star.png);
+        background-image: url(../../assets/img/icon_star.png);
         background-size: 100% 100%;
         background-repeat: no-repeat;
       }
@@ -533,7 +682,7 @@ export default {
         width: 12px;
         height: 12px;
         border-radius: 50%;
-        background-image: url(../assets/img/icon_star.png);
+        background-image: url(../../assets/img/icon_star.png);
         background-size: 100% 100%;
         background-repeat: no-repeat;
       }
@@ -551,7 +700,7 @@ export default {
         width: 12px;
         height: 12px;
         border-radius: 50%;
-        background-image: url(../assets/img/icon_star.png);
+        background-image: url(../../assets/img/icon_star.png);
         background-size: 100% 100%;
         background-repeat: no-repeat;
       }
@@ -568,7 +717,7 @@ export default {
       width: 12px;
       height: 12px;
       border-radius: 50%;
-      background-image: url(../assets/img/icon_star.png);
+      background-image: url(../../assets/img/icon_star.png);
       background-size: 100% 100%;
       background-repeat: no-repeat;
     }
@@ -585,7 +734,7 @@ export default {
         width: 30px;
         height: 30px;
         border-radius: 50%;
-        background-image: url(../assets/img/icon_person.png);
+        background-image: url(../../assets/img/icon_person.png);
         background-size: 100% 100%;
         background-repeat: no-repeat;
       }
@@ -643,7 +792,7 @@ export default {
     .upload-icon {
       width: 24px;
       height: 24px;
-      background-image: url("../assets/img/icon_add.png");
+      background-image: url("../../assets/img/icon_add.png");
       background-size: 100% 100%;
       background-repeat: no-repeat;
     }
@@ -690,7 +839,7 @@ export default {
         right: 0;
         width: 20px;
         height: 20px;
-        background-image: url("../assets/img/icon_delete.png");
+        background-image: url("../../assets/img/icon_delete.png");
         background-size: 100% 100%;
         background-repeat: no-repeat;
       }

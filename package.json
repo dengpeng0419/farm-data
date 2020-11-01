@@ -18,10 +18,9 @@
       "api": "http://172.25.49.158:8088/mock/234/"
     },
     "test": {
-      "home": "https://bankplus-s-beta.jd.com:1098/test/pla/",
-      "static": "https://bankplus-s-beta.jd.com:1098/test/account/",
-      "path": "/account/",
-      "api": "https://bankplus-s-beta.jd.com:1098/fe/beta-08/"
+      "static": "http://129.28.159.112/farm-data/",
+      "path": "/farm-data/",
+      "api": "http://121.41.40.246:8083"
     },
     "production": {
       "home": "https://bankplus.jd.com/m-life/plaFinancingtran/",

@@ -37,11 +37,11 @@ const ajax = function(opts) {
   // }
 
   // container 报送
-  if (!FormData) {
-    opts.data.container = 'WEB';
-  } else {
-    opts.data.append('container', 'WEB')
-  }
+  // if (!FormData) {
+  //   opts.data.container = 'WEB';
+  // } else {
+  //   opts.data.append('container', 'WEB')
+  // }
 
   if (opts.type) {
     opts.method = opts.type;
@@ -53,9 +53,9 @@ const ajax = function(opts) {
     delete opts.dataType;
   }
 
-  if (opts.data.channelCode || opts.data.channelId) {
-    sessionStorage.setItem('channelCode', opts.data.channelCode || opts.data.channelId);
-  }
+  // if (opts.data.channelCode || opts.data.channelId) {
+  //   sessionStorage.setItem('channelCode', opts.data.channelCode || opts.data.channelId);
+  // }
 
   if (CODE_ENV === 'development') {
     console.log(JSON.stringify(opts.data));
@@ -63,9 +63,9 @@ const ajax = function(opts) {
   }
 
   // convert处理
-  if (CODE_ENV != 'production' && opts.data.ssl) {
-    opts.data.ssl = false
-  }
+  // if (CODE_ENV != 'production' && opts.data.ssl) {
+  //   opts.data.ssl = false
+  // }
 
   return new Promise((resole, reject) => {
     axios(opts).then(res => {
@@ -79,16 +79,16 @@ const ajax = function(opts) {
         json = JSON.parse(json) || {}
       }
 
-      if (json.resultCode === 0) {
+      if (json.code === 0) {
         // convert处理
-        resole(json.resultData);
+        resole(json.data);
       }
       // 跳转实名
-      else if (json.resultCode === -4) {
-        location.href = `${json.resultData.redirect}&directReturnUrl=${encodeURIComponent(callbackUrl)}`;
+      else if (json.code === -4) {
+        location.href = `${json.data.redirect}&directReturnUrl=${encodeURIComponent(callbackUrl)}`;
       }
       // 未登录
-      else if (json.resultCode === -5) {
+      else if (json.code === -5) {
         // 1是登陆状态  2 otp鉴权方式未登陆状态  3超级账户方式未登陆状态
         if (json.resultMsg && json.resultMsg.code === '3') {
           // 超级账户登录
@@ -113,8 +113,8 @@ const ajax = function(opts) {
         })
       }
       // 普通跳转
-      else if (json.resultCode === -6) {
-        if (json.resultData.redirect.indexOf('code=505') > -1) {
+      else if (json.code === -6) {
+        if (json.data.redirect.indexOf('code=505') > -1) {
           this.$router.replace({
             name: 'Error',
             params: {
@@ -122,13 +122,13 @@ const ajax = function(opts) {
             }
           })
         } else {
-          window.location.replace(json.resultData.redirect);
+          window.location.replace(json.data.redirect);
         }
       }
       // 失败
       else {
         const resultMsg = json.resultMsg || {};
-        // 银行维护，resultCode=-1,code='CHANNEL_MAINTAIN'
+        // 银行维护，code=-1,code='CHANNEL_MAINTAIN'
         if (resultMsg.code === 'CHANNEL_MAINTAIN') {
           this.$router.replace({
             name: 'Error',

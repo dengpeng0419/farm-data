@@ -1,28 +1,26 @@
 <template>
   <div class="page-farmer-list">
-    <!-- <group title="cell demo" class="card-head">
-      <cell title="VUX" value="cool" is-link @click.native="showAlert"></cell>
-    </group> -->
+    <div class="add-farmer" @click="addFarmer">+</div>
     <div ref="cardList" class="card-list" @touchstart="touchStart($event)" @touchend="touchEnd($event)">
       <div class="content" v-for="(item, index) in list" :key=index>
         <div class="line-top">
-          <div class="name">张三<span>1345877633</span></div>
+          <div class="name">{{item.customerName}}<span>{{item.phone}}</span></div>
           <div class="status">正在跟进</div>
         </div>
         <div class="line-middle">
           <div class="left">
-            <div class="title">2020年度 400亩 大田作物</div>
-            <div class="address">经营地址：江苏省南京市雨花区</div>
+            <div class="title">{{item.latestOperateInfoDetail}}</div>
+            <div class="address">经营地址：{{item.operateAddress}}</div>
           </div>
           <div class="right">
             <div class="icon"></div>
-            <div class="icon-name">赵小刚</div>
+            <div class="icon-name">{{item.maintainManName}}</div>
           </div>
         </div>
         <div class="line-bottom">
           <div class="logo-go logo" @touchstart="showAlert('功能开发中')">跟进</div>
           <div class="logo-edit logo" @touchstart="goEdit">编辑</div>
-          <a href="tel:134898798988" class="logo-tel logo">电话</a>
+          <a :href="`tel:${item.phone}`" class="logo-tel logo">电话</a>
           <div class="logo-more" @touchstart="showAlert('功能开发中')">更多</div>
         </div>
       </div>
@@ -36,7 +34,6 @@
 </template>
 
 <script>
-
 export default {
   components: {
     
@@ -53,7 +50,15 @@ export default {
       starobjectarrnum: 5,
       tip: '上滑加载更多',
       showloadmore: false,
-      list: [1,2,2,2,2],
+      list: [
+        // {
+        // customerName: "种植户已修改",
+        // phone: "15364153383",
+        // latestOperateInfoDetail: "2090年度  10.50亩  粮食作物",
+        // operateAddress: '',
+        // maintainManName: "刘伯温"
+      // }
+      ],
       hasMore: true
     }
   },
@@ -62,6 +67,11 @@ export default {
     this.getPageData()
   },
   methods: {
+    addFarmer() {
+      this.$router.push({
+        name: 'FarmerAdd'
+      })
+    },
     goEdit() {
       this.$router.push({
         name: 'FarmerInfo'
@@ -83,7 +93,6 @@ export default {
     touchStart(e) {
       // 记录按下位置
       this.startY = e.targetTouches[0].pageY
-      console.log('start', this.startY)
     },
     touchEnd(e) {
       if (this.isLoading) {
@@ -91,9 +100,7 @@ export default {
       }
       let endX = e.changedTouches[0].pageX
       let endY = e.changedTouches[0].pageY
-      console.log('end', endY)
       let dy = this.startY - endY
-      console.log('dy', dy)
       // 判断是否向上滑动
       if (dy <= 0) {
         return false
@@ -104,7 +111,7 @@ export default {
       let scrollHeight = this.$el.scrollHeight
       const element = this.$refs.cardList
       let scrollTop = document.body.scrollTop || document.documentElement.scrollTop
-      console.log(scrollHeight, scrollTop, this.startY, dy)
+      // console.log(scrollHeight, scrollTop, this.startY, dy)
       if (this.startY + dy >= scrollHeight) {
         this.scrollToEnd(e)
       }
@@ -118,7 +125,6 @@ export default {
       }
     },
     doLoadMore() {
-      console.log('doLoadMore')
       this.tip = '加载中...'
       this.isLoading = true
       this.showloadmore = true
@@ -163,16 +169,10 @@ export default {
         this.handleInitPage(data)
       }).catch(err => {
         this.pageShow = true
-        if (err.code === 'PC00010') {
-          this.errorCode = '400'
-          this.pageError = '您还没有开通银行卡，点击选购喜欢的产品，完成银行开户吧'
-        } else {
-          this.pageError = err.msg
-        }
       })
     },
     handleInitPage(data) {
-
+      this.list = data.rows
     },
     urls() {
       return {
@@ -189,6 +189,24 @@ export default {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  position: relative;
+  .add-farmer {
+    position: absolute;
+    bottom: 100px;
+    right: 20px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #6fc0f0;
+    font-size: 40px;
+    text-align: center;
+    color: #fff;
+    line-height: 30px;
+    // border: 2Px solid #6fc0f0;
+    // background-image: url(../../assets/img/icon_add.png);
+    // background-repeat: no-repeat;
+    // background-size: 100% 100%;
+  }
   .card-list {
     flex: 1;
     display: flex;
@@ -251,7 +269,7 @@ export default {
           .icon {
             width: 30px;
             height: 30px;
-            background-image: url(../assets/img/icon_person.png);
+            background-image: url(../../assets/img/icon_person.png);
             background-repeat: no-repeat;
             background-size: 100% 100%;
           }
@@ -276,7 +294,7 @@ export default {
           margin-top: -10px;
           width: 25px;
           height: 20px;
-          background-image: url(../assets/img/icon_go.png);
+          background-image: url(../../assets/img/icon_go.png);
           background-repeat: no-repeat;
           background-size: 100% 100%;
         }
@@ -288,7 +306,7 @@ export default {
           margin-top: -10px;
           width: 25px;
           height: 20px;
-          background-image: url(../assets/img/icon_edit.png);
+          background-image: url(../../assets/img/icon_edit.png);
           background-repeat: no-repeat;
           background-size: 100% 100%;
         }
@@ -300,7 +318,7 @@ export default {
           margin-top: -10px;
           width: 25px;
           height: 20px;
-          background-image: url(../assets/img/icon_tel.png);
+          background-image: url(../../assets/img/icon_tel.png);
           background-repeat: no-repeat;
           background-size: 100% 100%;
         }
@@ -315,7 +333,7 @@ export default {
             margin-top: -10px;
             width: 20px;
             height: 18px;
-            background-image: url(../assets/img/icon_arrow.png);
+            background-image: url(../../assets/img/icon_arrow.png);
             background-repeat: no-repeat;
             background-size: 100% 100%;
           }
