@@ -3,62 +3,68 @@
     <group>
       <div class="inline">
         <x-input id="style1" placeholder="请输入客户手机号" v-model="form.phone"></x-input>
-        <div class="check-repeat">查重</div>
+        <div class="check-repeat" @click="checkRepeat(form.phone)">查重</div>
       </div>
     </group>
     <group title="基础信息">
-      <x-input id="style2" @on-focus="style2='color:#333'" class="input-required" :title='`<span style="${style2}">客户姓名</span>`' placeholder="点击填写" text-align="right" v-model="form.customerName" required></x-input>
-      <popup-picker ref="picker1" title="客户性别" placeholder="点击选择" @on-change="pickerChange" :value="sex" :data=sys_user_sex></popup-picker>
+      <x-input id="style2" @on-focus="style2='color:#333'" class="s-input-required" :title='`<span style="${style2}">客户姓名</span>`' placeholder="点击填写" text-align="right" v-model="form.customerName" required></x-input>
+      <popup-picker ref="picker1" @click.native="clickPicker('picker1', 'sex')" title="客户性别" placeholder="点击选择" @on-change="pickerChange" :value="sex" :data=sys_user_sex></popup-picker>
       <div class="inline border-top">
-        <x-address id="style3" @on-show="style3='color:#333'" :title='`<span style="${style3}">经营地区</span>`' style="flex:1;" class="required left-padding" v-model="value1" :list="addressData" placeholder="点击选择"></x-address>
-        <div class="map-button">定位</div>
+        <x-address id="style3" @on-show="style3='color:#333'" :title='`<span style="${style3}">经营地区</span>`' style="flex:1;" class="required left-padding" v-model="form.address" :list="addressData" placeholder="点击选择"></x-address>
+        <div class="map-button" @click="openMapView">定位</div>
       </div>
-      <x-input class="input-required" title="详细经营地址" placeholder="点击填写" text-align="right" v-model="form.custormer" required></x-input>
-      <popup-picker ref="picker2" @click.native="clickPicker('picker2', 'customerState')" class="required" title="客户意向" placeholder="点击选择" @on-change="pickerChange" :value="customerState" :data=customer_intention></popup-picker>
-      <popup-picker class="required" title="客户来源" placeholder="点击选择" v-model="value1" :data=list></popup-picker>
-      <popup-picker class="required person" title="归属人员" placeholder="点击选择" v-model="value1" :data=list></popup-picker>
+      <x-input id="style4" @on-focus="style4='color:#333'" class="input-required" :title='`<span style="${style4}">详细经营地址</span>`' placeholder="点击填写" text-align="right" v-model="form.detail" required></x-input>
+      <popup-picker id="style5" @on-show="style5='color:#333'" ref="picker2" @click.native="clickPicker('picker2', 'customerState')" class="required" 
+        :title='`<span style="${style5}">客户意向</span>`' placeholder="点击选择" @on-change="pickerChange" :value="customerState" :data=customer_intention></popup-picker>
+      <popup-picker id="style6" @on-show="style6='color:#333'" ref="picker3" @click.native="clickPicker('picker3', 'source')" class="required" 
+        :title='`<span style="${style6}">客户来源</span>`' placeholder="点击选择" @on-change="pickerChange" :value="source" :data=customer_source></popup-picker>
+      <popup-picker id="style7" @on-show="style7='color:#333'" ref="picker4" @click.native="clickPicker('picker4', 'maintainMan')" class="required person" 
+        :title='`<span style="${style7}">归属人员</span>`' placeholder="点击选择" @on-change="pickerChange" :value="maintainMan" :data=personList></popup-picker>
     </group>
     <div style="position:relative">
-      <div class="add-group">添加经营历史</div>
-      <group title="经营历史">
+      <div class="add-group" @click="addHistory">添加经营历史</div>
+      <group title="经营历史" v-for="(item,index) in uploadForm" :key=index>
         <div class="inline">
-          <div class="div-required">时间</div>
-          <checker class="checker-line" v-model="demo1" default-item-class="checker" selected-item-class="checker-selected">
-            <checker-item value="1">2020</checker-item>
-            <checker-item value="2">2019</checker-item>
-            <checker-item value="3">2018</checker-item>
-            <checker-item value="4">2017</checker-item>
-            <checker-item value="0" @click.native="moreYearChange">更多</checker-item>
+          <div class="div-required" :id="`style01${index}`" :style="`${uploadForm[index].style1}`">时间</div>
+          <checker class="checker-line" v-model="uploadForm[index].operateYear" @on-change="getOperateYear" default-item-class="checker" selected-item-class="checker-selected">
+            <checker-item value="2020">2020</checker-item>
+            <checker-item value="2019">2019</checker-item>
+            <checker-item value="2018">2018</checker-item>
+            <checker-item value="2017">2017</checker-item>
+            <checker-item value="0" @click.native="moreYearChange(index)">更多</checker-item>
           </checker>
         </div>
-        <popup-picker title="种植季" placeholder="点击选择" v-model="value1" :data=list></popup-picker>
-        <x-input class="input-required" title="包种亩数" placeholder="点击填写" text-align="right" v-model="form.custormer" required></x-input>
-        <popup-picker class="required" title="种植类型" placeholder="点击选择" v-model="value1" :data=list></popup-picker>
-        <x-input title="平均单亩租金" placeholder="点击填写" text-align="right" v-model="form.custormer" required></x-input>
-        <popup-picker title="种植种类" placeholder="点击选择" v-model="value1" :data=list></popup-picker>
+        <popup-picker title="种植季" placeholder="点击选择" v-model="uploadForm[index].operateQuarter" :data=plant_quarter></popup-picker>
+        <x-input :id="`style02${index}`" @on-focus="uploadForm[index].style2='color:#333'"  class="s-input-required" :title='`<span style="${uploadForm[index].style2}">包种亩数</span>`' 
+          placeholder="点击填写" text-align="right" v-model="uploadForm[index].operateNum" required></x-input>
+        <popup-picker :id="`style03${index}`" @on-show="uploadForm[index].style3='color:#333'" class="required" :title='`<span style="${uploadForm[index].style3}">种植类型</span>`' 
+          placeholder="点击选择" v-model="uploadForm[index].plantingType" :data=planting_type></popup-picker>
+        <x-input title="平均单亩租金" placeholder="点击填写" text-align="right" v-model="uploadForm[index].averageRent" required></x-input>
+        <popup-picker title="种植种类" placeholder="点击选择" v-model="uploadForm[index].plantingSubType" :data=planting_sub_type></popup-picker>
         <div class="upload-title">经营照片</div>
         <div class="upload-line">
-          <file-upload v-show="form[fileListName].length==0" accept="image/*" ref="upload" @click.native="clickUpload(0)" @input-file="inputFile" @input-filter="inputFilter" v-model="form.fileList">
+          <file-upload v-show="!uploadForm[index].fileList" accept="image/*" ref="upload" @click.native="clickUpload(index)" @input-file="inputFile" @input-filter="inputFilter">
             <div class="upload-button">
               <div class="upload-icon"></div>
               <div class="upload-text">上传</div>
             </div>
           </file-upload>
-          <div class="upload-preview" v-show="form[fileListName].length>0">
-            <img @click="showPreview(form[fileListName])" class="preview-image" v-if="form.fileList[0]&&form.fileList[0].fileBase64Content" :src="'data:image/png;base64,'+form.fileList[0].fileBase64Content" />
-            <div class="close-image" v-if="form.fileList[0]&&form.fileList[0].fileBase64Content" @click="removeImage"></div>
+          <div class="upload-preview" v-show="uploadForm[index].fileList">
+            <img @click="showPreview('data:image/png;base64,'+uploadForm[index].fileList)" class="preview-image" :src="'data:image/png;base64,'+uploadForm[index].fileList" />
+            <div class="close-image" @click="removeImage"></div>
           </div>
           <div class="upload-demo" @click="showPreview(demoImage)">
             <img class="image" :src="demoImage" />
             <div class="desc">示例图</div>
           </div>
         </div>
+        <div class="delete-line" @click="deleteLine(index)" v-if="index>0">删除经营历史</div>
       </group>
     </div>
     <group title="经营履历">
-      <x-input title="总经营年限" placeholder="点击填写" text-align="right" v-model="form.custormer"></x-input>
+      <x-input title="总经营年限" placeholder="点击填写" text-align="right" v-model="form.operateDuration"></x-input>
       <div class="weui-cell">备注信息</div>
-      <x-textarea name="description" placeholder="请输入备注信息"></x-textarea>
+      <x-textarea name="description" placeholder="请输入备注信息" v-model="form.remark"></x-textarea>
     </group>
     <div class="inline-button">
       <x-button plain>取消</x-button>
@@ -73,7 +79,7 @@
           :show-bottom-border="false"
           @on-click-left="moreYear = false"
           @on-click-right="moreYear = false"></popup-header>
-        <picker :data='years' v-model='year5'></picker>
+        <picker :data='moreYearList' v-model='moreYearOne' @on-change="chooseMoreYear"></picker>
       </popup>
     </div>
     <div v-transfer-dom>
@@ -86,6 +92,22 @@
         </div>
       </x-dialog>
     </div>
+    <div v-transfer-dom>
+      <popup v-model="showMap" height="100%" style="overflow:hidden" position="bottom" @popup-header-height=0>
+        <popup-header
+          left-text="取消"
+          right-text="确定"
+          title="选择位置"
+          :show-bottom-border="false"
+          @on-click-left="showMap = false"
+          @on-click-right="showMap = false"></popup-header>
+        <baidu-map class="bmView" :scroll-wheel-zoom="true" :center="location" :zoom="zoom" @click="getLocationPoint">
+          <bm-view style="width: 100%; height:100vh;"></bm-view>
+          <bm-local-search :keyword="addressKeyword" :auto-viewport="true" style="display: none"></bm-local-search>
+        </baidu-map>
+        <div style="position:absolute; bottom:0: left:0; width: 100%; background:#fff; padding:10px;">{{address}}</div>
+      </popup>
+    </div>
   </div>
 </template>
 
@@ -93,6 +115,7 @@
 import { ChinaAddressV4Data, TransferDom } from 'vux'
 import FileUpload from 'vue-upload-component'
 import Compressimg from '@/components/Compressimg'
+
 export default {
   name: 'HelloWorld',
   directives: {
@@ -108,10 +131,30 @@ export default {
         phone: '',
         customerName: '',
         customerState: [],
-        fileList: []
+        address: [],
+        detail: '',
+        source: [],
+        maintainMan: [],
+        fileList: [],
+        operateDuration: '',
+        remark: ''
       },
+      uploadForm: [{
+        operateYear: '',
+        operateQuarter: [],
+        operateNum: '',
+        plantingType: [],
+        averageRent: '',
+        plantingSubType: [],
+        fileList: '',
+        style1: '',
+        style2: '',
+        style3: ''
+      }],
       sex: [],
       customerState: [],
+      source: [],
+      maintainMan: [],
       fileUrlList: [],
       value: '',
       value1: [],
@@ -136,6 +179,41 @@ export default {
         name: '意向弱',
         value: '4'
       }]],
+      customer_source: [[{
+        name: '电话营销',
+        value: '1'
+      }, {
+        name: '主动来电',
+        value: '2'
+      }, {
+        name: '客户介绍',
+        value: '3'
+      }, {
+        name: '朋友介绍',
+        value: '4'
+      }, {
+        name: '独立开发',
+        value: '5'
+      }, {
+        name: '政府开发',
+        value: '6'
+      }, {
+        name: '政府介绍',
+        value: '7'
+      }, {
+        name: '展会促销',
+        value: '8'
+      }, {
+        name: '其他途径',
+        value: '9'
+      }]],
+      personList: [[{
+        name: '赵小刚',
+        value:  '233'
+      }]],
+      plant_quarter: [['第一季','第二季','第三季']],
+      planting_type: [['粮食作物','经济作物']],
+      planting_sub_type: [['禾谷类作物','豆类作物','薯芋类作物','纤维作物','油料作物',]],
       options: [{
         key: 'KEY', 
         value: 'VALUE'
@@ -146,8 +224,8 @@ export default {
       addressData: ChinaAddressV4Data,
       demo1: '',
       moreYear: false,
-      year5: ['2020'],
-      years: [['2020','2019']],
+      moreYearOne: [],
+      moreYearList: [['2020','2019']],
       demoImage: 'https://m.360buyimg.com/jrqb/jfs/t1/153403/4/3991/173788/5f9a7e32Efd280cbc/5fe9daee856512ba.png',
       scanImageCss: false,
       showDialog: false,
@@ -155,15 +233,75 @@ export default {
       style1: '',
       style2: '',
       style3: '',
+      style4: '',
+      style5: '',
+      style6: '',
+      style7: '',
+      checkStyle: ['phone', 'customerName', 'customerState', 'address', 'detail', 'source', 'maintainMan'],
       chooseRef: '',
       chooseProp: '',
       fileListName: 'fileList',
-      chooseFile: -1
+      chooseFile: -1,
+      operateLine: -1,
+      location: {
+        lng: 116.404,
+        lat: 39.915
+      },
+      zoom: 12.8,
+      addressKeyword: '',
+      address: '123',
+      district: "江宁区", 
+      city: "南京市", 
+      province: "江苏省",
+      showMap: false
     }
   },
+  mounted() {
+    this.getPageData()
+  },
   methods: {
-    clickUpload() {
-      this.chooseFile = 0
+    checkRepeat(phone) {
+      const reg = /^1\d{10}$/
+      if (!phone) {
+        this.showAlert('请输入手机号')
+      } else if (!reg.test(phone)) {
+        this.showAlert('请输入正确的手机号')
+      }
+    },
+    openMapView() {
+      let geolocation = new BMap.Geolocation()
+      geolocation.getCurrentPosition((res) => {
+        this.location = res.point
+        this.showMap = true
+      }, {enableHighAccuracy: true})
+    },
+    getLocationPoint(e) {
+      this.lng = e.point.lng;
+      this.lat = e.point.lat;
+      /* 创建地址解析器的实例 */
+      let geoCoder = new BMap.Geocoder()
+      /* 获取位置对应的坐标 */
+      geoCoder.getPoint(this.addressKeyword, point => {
+        this.selectedLng = point.lng
+        this.selectedLat = point.lat
+      });
+      /* 利用坐标获取地址的详细信息 */
+      geoCoder.getLocation(e.point, res => {
+        console.log(res);
+        this.address = res.address
+        this.province = res.addressComponents.province
+        this.city = res.addressComponents.city
+        this.district = res.addressComponents.district
+      })
+    },
+    addHistory() {
+      this.uploadForm.push({style1: ''})
+    },
+    deleteLine(index) {
+      this.uploadForm.splice(index, 1)
+    },
+    clickUpload(index) {
+      this.chooseFile = index
     },
     clickPicker(name, prop) {
       this.chooseRef = name
@@ -177,16 +315,35 @@ export default {
       console.log(333)
     },
     save() {
-      console.log(this.form.customerState)
-      this.$nextTick(() => {
-        document.getElementById("style3").scrollIntoView()
-        this.style3 = 'color:red;'
-      })
+      let error = false
+      for (let i = 1; i < 8; i++) {
+        const value = this.form[this.checkStyle[i-1]]
+        if (value == undefined || value.length === 0) {
+          !error && document.getElementById(`style${i}`).scrollIntoView()
+          error = true
+          this[`style${i}`] = 'color:red;'
+        }
+      }
+      for (let j = 0; j < this.uploadForm.length; j++) {
+        if (this.uploadForm[j].operateYear == undefined || this.uploadForm[j].operateYear.length === 0) {
+          !error && document.getElementById(`style01${j}`).scrollIntoView()
+          error = true
+          this.uploadForm[j].style1 = 'color: red'
+        } else if (this.uploadForm[j].operateNum == undefined || this.uploadForm[j].operateNum.length === 0) {
+          !error && document.getElementById(`style02${j}`).scrollIntoView()
+          error = true
+          this.uploadForm[j].style2 = 'color: red'
+        } else if (this.uploadForm[j].plantingType == undefined || this.uploadForm[j].plantingType.length === 0) {
+          !error && document.getElementById(`style03${j}`).scrollIntoView()
+          error = true
+          this.uploadForm[j].style3 = 'color: red'
+        }
+      }
     },
     showPreview(fileList) {
-      let img = 'data:image/png;base64,'+fileList[0].fileBase64Content
       this.showDialog = true
-      this.preImg = img
+      this.preImg = fileList
+      console.log(this.form)
     },
 
     inputFile: function (newFile, oldFile) {
@@ -228,22 +385,32 @@ export default {
         size: 512000,
         quality: 80,
         callback: (dataUrl) => {
-          this.form.fileList = [{
-            fileBase64Content: dataUrl.split(',')[1]
-          }]
+          // this.form.fileList = [{
+          //   fileBase64Content: dataUrl.split(',')[1]
+          // }]
+          this.uploadForm[this.chooseFile].fileList = dataUrl.split(',')[1]
+          this.uploadForm = JSON.parse(JSON.stringify(this.uploadForm))
           this.scanImageCss = true
           // this.uploadFile(dataUrl)
         }
       })
     },
-    moreYearChange() {
-      this.moreYear = true
+    getOperateYear(value) {
+      this.uploadForm[0].style1 = 'color: #333'
+      value === '0' && (this.moreYear = true)
+      console.log(this.uploadForm)
     },
-    showAlert() {
-      console.log(this.form)
+    moreYearChange(index) {
+      this.operateLine = index
+    },
+    chooseMoreYear(value) {
+      this.uploadForm[this.operateLine].operateYear = value[0]
+      console.log(this.uploadForm)
+    },
+    showAlert(msg) {
       this.$vux.alert.show({
-        title: 'Vux is Cool',
-        content: 'Do you agree?',
+        title: '提示',
+        content: msg,
         onShow () {
           console.log('Plugin: I\'m showing')
         },
@@ -276,7 +443,7 @@ export default {
     },
     urls() {
       return {
-        init: `${process.env.URL.api}123`,
+        init: `http://thegisguy.cn:8085/system/point/edit/1`,
         upload: `${process.env.URL.api}upload`,
       }
     }
@@ -336,6 +503,24 @@ export default {
     padding: 16px 15px !important;
     color: #333 !important;
   }
+  .s-input-required {
+    .weui-cell__hd {
+      position: relative;
+      &::before {
+        position: absolute;
+        content: '';
+        top: 50%;
+        margin-top: -7px;
+        right: 16px;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background-image: url(../assets/img/icon_star.png);
+        background-size: 100% 100%;
+        background-repeat: no-repeat;
+      }
+    }
+  }
   .input-required {
     .weui-cell__hd {
       position: relative;
@@ -344,7 +529,7 @@ export default {
         content: '';
         top: 50%;
         margin-top: -7px;
-        right: 0;
+        right: -12px;
         width: 12px;
         height: 12px;
         border-radius: 50%;
@@ -546,6 +731,11 @@ export default {
     .save-button {
       margin-left: 20px;
     }
+  }
+  .delete-line {
+    text-align: center;
+    color: #f47983;
+    padding-bottom:10px;
   }
 }
 </style>

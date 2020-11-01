@@ -14,7 +14,7 @@ const ajax = function(opts) {
     url: '',
     data: {},
     timeout: 30000,
-    withCredentials: true,
+    // withCredentials: true,
     headers: {
       'X-Requested-With': 'XMLHttpRequest',
       'Content-Type': 'application/json;charset=UTF-8'
@@ -29,12 +29,12 @@ const ajax = function(opts) {
   // console.error('callbackUrl:' + callbackUrl);
 
   // adTag 报送
-  let adtag = sessionStorage.getItem('tbf_adtag') || 'JDJR';
-  if (!FormData) {
-    opts.data.adTag = adtag;
-  } else {
-    opts.data.append('adTag', adtag);
-  }
+  // let adtag = sessionStorage.getItem('tbf_adtag') || 'JDJR';
+  // if (!FormData) {
+  //   opts.data.adTag = adtag;
+  // } else {
+  //   opts.data.append('adTag', adtag);
+  // }
 
   // container 报送
   if (!FormData) {

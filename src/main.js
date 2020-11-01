@@ -6,9 +6,9 @@ import FastClick from 'fastclick'
 import App from './App'
 import ajax from './components/ajax'
 import router from './router'
-import { Group, Cell, Alert, LoadMore, Loading, XInput, XAddress, Selector, 
+import { Group, Cell, LoadMore, Loading, XInput, XAddress, Selector, 
   PopupPicker, Checker, CheckerItem, Popup, PopupHeader, Picker, XTextarea,
-  XDialog, XButton } from 'vux'
+  XDialog, XButton, AlertPlugin } from 'vux'
 
 import BaiduMap from 'vue-baidu-map'
 
@@ -17,10 +17,11 @@ Vue.use(BaiduMap, {
   ak: '29HBufmFD2Edbi4fRK5CRObrlDk8lzr7'
 })
 
+Vue.use(AlertPlugin)
+
 FastClick.attach(document.body)
 Vue.component('Group', Group)
 Vue.component('Cell', Cell)
-Vue.component('Alert', Alert)
 Vue.component('load-more', LoadMore)
 Vue.component('loading', Loading)
 Vue.component('x-input', XInput)

@@ -138,7 +138,25 @@ export default {
       this.$axios({
         url: this.urls().init,
         data: {
-          ssl: true
+          addTime: 3,
+          addressList: [
+            {
+              city: "1101",
+              detail: "某小区",
+              district: "110101",
+              latitude: 15.33,
+              longitude: 15.33,
+              province: "11",
+              town: "11010101",
+              village: "1101010101",
+              addressLevel: 3
+            }
+          ],
+          customerStateCondition: "1,2,3",
+          keyValue: "153",
+          orderType: 1,
+          sourceCondition: "1,2",
+          customerBelongs: 1
         }
       }).then(json => {
         const data = json || {}
@@ -158,7 +176,8 @@ export default {
     },
     urls() {
       return {
-        init: `${process.env.URL.api}123`
+        // init: `${process.env.URL.api}123`
+        init: `http://thegisguy.cn:8085/system/customer/list`
       }
     }
   }
