@@ -11,6 +11,9 @@ var express = require('express')
 var webpack = require('webpack')
 var proxyMiddleware = require('http-proxy-middleware')
 var webpackConfig = require('./webpack.dev.conf')
+var mock = require('./mock')
+var os = require('os')
+var NetworkInterfaces = os.networkInterfaces()
 
 // default port where dev server listens for incoming traffic
 var port = process.env.PORT || config.dev.port
@@ -62,7 +65,39 @@ app.use(hotMiddleware)
 var staticPath = path.posix.join(config.dev.assetsPublicPath, config.dev.assetsSubDirectory)
 app.use(staticPath, express.static('./static'))
 
-var uri = 'http://localhost:' + port
+// mock request
+app.use(function(req, res, next) {
+  console.log('url->', req.url)
+  var data = mock(req.url)
+  if (data) {
+    res.setHeader('Access-Control-Allow-Origin', '*')
+    res.setHeader('Access-Control-Max-Age', 3600 * 24)
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, X-Requested-With')
+    res.setHeader('Access-Control-Allow-Credentials', 'true')
+    res.setHeader('Content-Type', 'application/json')
+    res.setHeader('Cache-Control', 'no-Cache')
+    res.end(JSON.stringify(data, null, 4))
+    return
+  }
+  next()
+});
+
+// var uri = 'http://localhost:' + port
+var getIp = () => {
+  var ip = 'localhost';
+  var count = 0;
+  Object.keys(NetworkInterfaces).forEach(name => {
+    if (count > 0) return;
+    NetworkInterfaces[name].forEach(item => {
+      if (item.family !== 'IPv4' || item.internal !== false) return;
+        ip = item.address;
+        count++;
+        return;
+      });
+    });
+    return ip;
+};
+var uri = 'http://'+ getIp() +':' + port + '/all-product'
 
 var _resolve
 var readyPromise = new Promise(resolve => {
@@ -73,9 +108,8 @@ console.log('> Starting dev server...')
 devMiddleware.waitUntilValid(() => {
   console.log('> Listening at ' + uri + '\n')
   // when env is testing, don't need open it
-
   if (autoOpenBrowser && process.env.NODE_ENV !== 'testing') {
-    opn(uri)
+    opn(uri, {app: ['google chrome', 'chrome', '--incognito']})
   }
   _resolve()
 })

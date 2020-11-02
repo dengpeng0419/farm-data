@@ -1,12 +1,42 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
-    <title>farm-data</title>
-  </head>
-  <body>
-    <div id="app"></div>
-    <!-- built files will be auto injected -->
-  </body>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,minimum-scale=1,user-scalable=no,viewport-fit=cover">
+<script>
+(function(win) {
+
+    var doc = win.document;
+    var docEl = doc.documentElement;
+    var tid;
+
+    // 计算rem基准值
+    function refreshRem() {
+        var width = docEl.getBoundingClientRect().width;
+        // 设置最大宽度
+        width > 750 && (width = 750);
+        var rem = width / 10 + 'px';
+        docEl.style.fontSize = rem;
+    }
+
+    // 浏览器窗口大小发生变化后重新计算rem基准值
+    win.addEventListener('resize', function() {
+        clearTimeout(tid);
+        tid = setTimeout(refreshRem, 300);
+    }, false);
+
+    refreshRem();
+
+})(window);
+</script>
+
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="format-detection" content="telephone=no,email=no">
+<meta name="msapplication-tap-highlight" content="no">
+<title>银行+</title>
+</head>
+<body>
+<div id="app"></div>
+</body>
 </html>
