@@ -10,10 +10,13 @@
       <x-input id="style2" @on-focus="style2='color:#333'" class="s-input-required" :title='`<span style="${style2}">客户姓名</span>`' placeholder="点击填写" text-align="right" v-model="form.customerName" required></x-input>
       <popup-picker  title="客户性别" placeholder="点击选择" show-name v-model="form.sex" :data=sys_user_sex></popup-picker>
       <div class="inline border-top">
-        <x-address id="style3" @on-show="style3='color:#333'" @on-shadow-change="showForm" :title='`<span style="${style3}">经营地区</span>`' style="flex:1;" class="required left-padding" v-model="form.address" :list="addressData" placeholder="点击选择"></x-address>
+        <!-- <x-address id="style3" @on-show="style3='color:#333'" @on-shadow-change="showForm" :title='`<span style="${style3}">经营地区</span>`' style="flex:1;" class="required left-padding" v-model="form.address" :list="addressData" placeholder="点击选择"></x-address> -->
+        <cell id="style3" @on-show="style3='color:#333'" @click.native="showAddress=true" title='经营地区' style="flex:1; margin-left: -15px" class="cell-required" 
+          :value="`${province}${city}${district}${town}${village}`" is-link></cell>
         <div class="map-button" @click="openMapView">定位</div>
       </div>
-      <x-input id="style4" @on-focus="style4='color:#333'" class="input-required" :title='`<span style="${style4}">详细经营地址</span>`' placeholder="点击填写" text-align="right" v-model="form.detail" required></x-input>
+      <x-input id="style4" @on-focus="style4='color:#333'" class="input-required" :title='`<span style="${style4}">详细经营地址</span>`' placeholder="点击填写" 
+        text-align="right" v-model="form.detail" required></x-input>
       <popup-picker id="style5" @on-show="style5='color:#333'" class="required" show-name
         :title='`<span style="${style5}">客户意向</span>`' placeholder="点击选择" v-model="form.customerState" :data=customer_intention></popup-picker>
       <popup-picker id="style6" @on-show="style6='color:#333'" class="required" show-name
@@ -93,6 +96,22 @@
       </x-dialog>
     </div>
     <div v-transfer-dom>
+      <popup v-model="showAddress" height="100%" position="bottom" @popup-header-height=0 @on-show="getProvince(0)">
+        <popup-header
+          style="position:fixed; top:0; left:0; width:100%; z-index:999"
+          left-text="取消"
+          right-text="确定"
+          title="选择位置"
+          :show-bottom-border="false"
+          @on-click-left="showAddress = false"
+          @on-click-right="chooseAddress"></popup-header>
+        <div style="position:fixed; top:44px; left:0; width:100%; height:44px; line-height:44px; padding-left:15px; z-index:999; background:#ddd">
+          {{this.province}}{{this.city}}{{this.district}}{{this.town}}{{this.village}}
+        </div>
+        <checklist style="margin-top:88px" label-position="left" :options="addressOptionList" v-model="addressValue" :max="1" @on-change="addressOptionChange"></checklist>
+      </popup>
+    </div>
+    <div v-transfer-dom>
       <popup v-model="showMap" height="100%" style="overflow:hidden" position="bottom" @popup-header-height=0>
         <popup-header
           left-text="取消"
@@ -100,7 +119,7 @@
           title="选择位置"
           :show-bottom-border="false"
           @on-click-left="showMap = false"
-          @on-click-right="showMap = false"></popup-header>
+          @on-click-right="chooseMapAddress"></popup-header>
         <baidu-map class="bmView" :scroll-wheel-zoom="true" :center="location" :zoom="zoom" @click="getLocationPoint">
           <bm-view style="width: 100%; height:100vh;"></bm-view>
           <bm-local-search :keyword="addressKeyword" :auto-viewport="true" style="display: none"></bm-local-search>
@@ -116,6 +135,12 @@ import { ChinaAddressV4Data, TransferDom } from 'vux'
 import FileUpload from 'vue-upload-component'
 import Compressimg from '@/components/Compressimg'
 import Upload from '@/components/upload'
+import axios from 'axios'
+import Vue from 'vue'
+import  VueJsonp from 'vue-jsonp'
+// // import { BMPGL } from "@/components/map.js";
+
+Vue.use(VueJsonp)
 
 export default {
   name: 'HelloWorld',
@@ -151,6 +176,10 @@ export default {
         style2: '',
         style3: ''
       }],
+      showAddress: false,
+      addressOptionList: [],
+      addressValue: [],
+      addressType: 0,
       fileUrlList: [],
       sys_user_sex: [[{
         name: '男',
@@ -256,8 +285,8 @@ export default {
       chooseRef: '',
       chooseProp: '',
       fileListName: 'fileList',
-      chooseFile: -1,
-      operateLine: -1,
+      chooseFile: 0,
+      operateLine: 0,
       location: {
         lng: 116.404,
         lat: 39.915
@@ -265,9 +294,11 @@ export default {
       zoom: 12.8,
       addressKeyword: '',
       address: '',
-      district: "江宁区", 
-      city: "南京市", 
-      province: "江苏省",
+      district: '',
+      city: '',
+      province: '点击选择',
+      town: '',
+      village: '',
       showMap: false
     }
   },
@@ -279,6 +310,48 @@ export default {
   methods: {
     showForm() {
       console.log(this.form)
+    },
+    chooseAddress() {
+      this.showAddress = false
+    },
+    chooseMapAddress() {
+      this.showMap = false
+      this.provinceCode && (this.form.address = [this.provinceCode, this.cityCode, this.districtCode])
+    },
+    addressOptionChange(value, label) {
+      // this.addressOptionList.push({key: '1', value: '001 value'}, {key: '2', value: '002 value'}, {key: '3', value: '003 value'})
+      console.log(value, label)
+      if (!value[0]) {
+        return
+      }
+      this.addressType === 1 && (this.province = label[0])
+      this.addressType === 2 && (this.city = label[0])
+      this.addressType === 3 && (this.district = label[0])
+      this.addressType === 4 && (this.town = label[0])
+      this.addressType === 5 && (this.village = label[0])
+      this.getProvince(value[0])
+    },
+    getProvince(id) {
+      id == 0 && (this.addressType = 0)
+      this.$axios({
+        url: 'http://thegisguy.cn:8085/util/area?parentAreaId='+id
+      }).then(json => {
+        const data = json || []
+        if (data.length === 0) {
+          this.showAddress = false
+          return
+        }
+        this.addressType ++
+        this.addressOptionList = []
+        data.map(item => {
+          const obj = {}
+          obj.key = item.areaCode
+          obj.value = item.areaName
+          this.addressOptionList.push(obj)
+        })
+      }).catch(error => {
+        console.log(error)
+      })
     },
     checkRepeat(phone) {
       const reg = /^1\d{10}$/
@@ -310,21 +383,30 @@ export default {
     getLocationPoint(e) {
       this.lng = e.point.lng;
       this.lat = e.point.lat;
-      /* 创建地址解析器的实例 */
-      let geoCoder = new BMap.Geocoder()
-      /* 获取位置对应的坐标 */
-      geoCoder.getPoint(this.addressKeyword, point => {
-        this.selectedLng = point.lng
-        this.selectedLat = point.lat
-      });
-      /* 利用坐标获取地址的详细信息 */
-      geoCoder.getLocation(e.point, res => {
-        console.log(res);
-        this.address = res.address
-        this.province = res.addressComponents.province
-        this.city = res.addressComponents.city
-        this.district = res.addressComponents.district
-      })
+      this.$jsonp('https://api.map.baidu.com/geocoder/v2/?callback=renderReverse&output=json&pois=1' , {
+        ak: 'ZwTVu16RLXjhW7FHDjYt5HfMnR1dhFpR',
+        location: this.lat + ',' + this.lng
+      }).then((res)=>{
+      　console.log(res)
+        const data = res.result || {}
+        this.address = data.formatted_address
+        this.province = data.addressComponent.province
+        this.city = data.addressComponent.city
+        this.district = data.addressComponent.district
+        this.street = data.addressComponent.street
+        this.town = data.addressComponent.town
+
+        this.province && (this.addressLevel = 1)
+        this.city && (this.addressLevel = 2)
+        this.district && (this.addressLevel = 3)
+        this.street && (this.addressLevel = 4)
+        this.town && (this.addressLevel = 5)
+
+        const adcode = data.addressComponent.adcode
+        this.provinceCode = adcode/10000
+        this.cityCode = adcode/100
+        this.districtCode = adcode
+      })  
     },
     addHistory() {
       this.uploadForm.push({
@@ -509,7 +591,7 @@ export default {
       })
     },
     getOperateYear(value) {
-      this.uploadForm[0].style1 = 'color: #333'
+      this.uploadForm[this.operateLine].style1 = 'color: #333'
       value === '0' && (this.moreYear = true)
       console.log(this.uploadForm)
     },
@@ -602,7 +684,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="less">
-@import '~vux/src/styles/close';
+// @import '~vux/src/styles/close';
 .page-farmer-info {
   padding-bottom: 60px;
   .check-repeat {
@@ -671,6 +753,9 @@ export default {
     }
   }
   .input-required {
+    .weui-cell__bd {
+      padding-left: 10px;
+    }
     .weui-cell__hd {
       position: relative;
       &::before {
@@ -679,6 +764,30 @@ export default {
         top: 50%;
         margin-top: -7px;
         right: -12px;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background-image: url(../../assets/img/icon_star.png);
+        background-size: 100% 100%;
+        background-repeat: no-repeat;
+      }
+    }
+  }
+  .cell-required {
+    .weui-cell__ft {
+      max-width: 120px;
+      overflow: scroll;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .vux-cell-bd {
+      position: relative;
+      &::before {
+        position: absolute;
+        content: '';
+        top: 50%;
+        margin-top: -7px;
+        left: 75px;
         width: 12px;
         height: 12px;
         border-radius: 50%;
@@ -885,6 +994,16 @@ export default {
     text-align: center;
     color: #f47983;
     padding-bottom:10px;
+  }
+  .address-content {
+    margin-top: 44px;
+    display: flex;
+    flex-direction: column;
+    // height: 100vh;
+    overflow-y: scroll;
+    .addressTitle {
+      flex: 1;
+    }
   }
 }
 </style>

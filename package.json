@@ -34,6 +34,7 @@
     "fastclick": "^1.0.6",
     "vue": "^2.5.2",
     "vue-baidu-map": "^0.21.22",
+    "vue-jsonp": "^0.1.8",
     "vue-router": "^3.0.1",
     "vue-upload-component": "^2.8.20",
     "vuex": "^2.1.1",

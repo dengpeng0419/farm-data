@@ -45,7 +45,15 @@ const webpackConfig = merge(baseWebpackConfig, {
       // set the following option to `true` if you want to extract CSS from
       // codesplit chunks into this main css file as well.
       // This will result in *all* of your app's CSS being loaded upfront.
-      allChunks: false,
+      allChunks: true,
+    }),
+    // Compress extracted CSS. We are using this plugin so that possible
+    // duplicated CSS from different components can be deduped.
+    new OptimizeCSSPlugin({
+      // http://cssnano.co/optimisations/
+      cssProcessorOptions: config.build.productionSourceMap
+        ? { safe: true, map: { inline: false }, autoprefixer: false, zindex: false } 
+        : { safe: true, autoprefixer: false, zindex: false }
     }),
     // generate dist index.html with correct asset hash for caching.
     // you can customize output by editing /index.html
@@ -57,7 +65,9 @@ const webpackConfig = merge(baseWebpackConfig, {
       minify: {
         removeComments: true,
         collapseWhitespace: true,
-        removeAttributeQuotes: true
+        removeAttributeQuotes: true,
+        minifyJS: true,
+        minifyCSS: true
         // more options:
         // https://github.com/kangax/html-minifier#options-quick-reference
       },

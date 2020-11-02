@@ -592,7 +592,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="less">
-@import '~vux/src/styles/close';
+// @import '~vux/src/styles/close';
 .page-point-info {
   padding-bottom: 60px;
   .check-repeat {

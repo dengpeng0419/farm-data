@@ -8,7 +8,7 @@ import ajax from './components/ajax'
 import router from './router'
 import { Group, Cell, LoadMore, Loading, XInput, XAddress, Selector, 
   PopupPicker, Checker, CheckerItem, Popup, PopupHeader, Picker, XTextarea,
-  XDialog, XButton, AlertPlugin, Datetime } from 'vux'
+  XDialog, XButton, AlertPlugin, Datetime, Checklist } from 'vux'
 
 import BaiduMap from 'vue-baidu-map'
 
@@ -21,7 +21,7 @@ Vue.use(AlertPlugin)
 
 FastClick.attach(document.body)
 Vue.component('Group', Group)
-Vue.component('Cell', Cell)
+Vue.component('cell', Cell)
 Vue.component('load-more', LoadMore)
 Vue.component('loading', Loading)
 Vue.component('x-input', XInput)
@@ -37,6 +37,7 @@ Vue.component('popup-header', PopupHeader)
 Vue.component('x-dialog', XDialog)
 Vue.component('x-button', XButton)
 Vue.component('datetime', Datetime)
+Vue.component('checklist', Checklist)
 
 Vue.prototype.$axios = ajax
 Vue.config.productionTip = false
