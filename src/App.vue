@@ -1,12 +1,12 @@
 <template>
-  <div id="app-box">
+  <div id="app">
     <router-view></router-view>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'app-box'
+  name: 'app'
 }
 </script>
 
@@ -17,7 +17,7 @@ body {
   background-color: #f7f7f7;
 }
 
-#app-box {
+#app {
   margin: 0;
   padding: 0;
   min-height: 100vh;

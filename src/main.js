@@ -43,7 +43,17 @@ Vue.prototype.$axios = ajax
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */
+// new Vue({
+//   router,
+//   render: h => h(App)
+// }).$mount('#app')
+
 new Vue({
+  el: '#app',
   router,
-  render: h => h(App)
-}).$mount('#app-box')
+  // store,
+  template: '<App/>',
+  components: {
+      App
+  }
+})

@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "cross-env CODE_ENV=development webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
     "start": "npm run dev",
-    "test": "cross-env CODE_ENV=test node build/build.js",
+    "test": "cross-env CODE_ENV=production node build/build.js",
     "build": "cross-env CODE_ENV=production node build/build.js"
   },
   "config": {
@@ -23,10 +23,9 @@
       "api": "http://121.41.40.246:8083"
     },
     "production": {
-      "home": "https://bankplus.jd.com/m-life/plaFinancingtran/",
-      "static": "https://bankplus.jd.com/account/",
-      "path": "/account/",
-      "api": "https://bankplus.jd.com/fe/"
+      "static": "http://129.28.159.112/farm-data/",
+      "path": "/farm-data/",
+      "api": "http://121.41.40.246:8083"
     }
   },
   "dependencies": {
