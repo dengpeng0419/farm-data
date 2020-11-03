@@ -96,7 +96,7 @@
       </x-dialog>
     </div>
     <div v-transfer-dom>
-      <popup v-model="showAddress" height="100%" position="bottom" @popup-header-height=0 @on-show="getProvince(0)">
+      <popup v-model="showAddress" height="100%" position="bottom" @popup-header-height=0 @on-show="getProvince">
         <popup-header
           style="position:fixed; top:0; left:0; width:100%; z-index:999"
           left-text="取消"
@@ -180,6 +180,7 @@ export default {
       addressOptionList: [],
       addressValue: [],
       addressType: 0,
+      addressId: 0,
       fileUrlList: [],
       sys_user_sex: [[{
         name: '男',
@@ -319,22 +320,22 @@ export default {
       this.provinceCode && (this.form.address = [this.provinceCode, this.cityCode, this.districtCode])
     },
     addressOptionChange(value, label) {
-      // this.addressOptionList.push({key: '1', value: '001 value'}, {key: '2', value: '002 value'}, {key: '3', value: '003 value'})
       console.log(value, label)
       if (!value[0]) {
         return
       }
+      this.addressId = value[0]
       this.addressType === 1 && (this.province = label[0])
       this.addressType === 2 && (this.city = label[0])
       this.addressType === 3 && (this.district = label[0])
       this.addressType === 4 && (this.town = label[0])
       this.addressType === 5 && (this.village = label[0])
-      this.getProvince(value[0])
+      this.getProvince()
     },
-    getProvince(id) {
+    getProvince() {
       id == 0 && (this.addressType = 0)
       this.$axios({
-        url: 'http://thegisguy.cn:8085/util/area?parentAreaId='+id
+        url: 'http://thegisguy.cn:8085/util/area?parentAreaId=' + this.addressId
       }).then(json => {
         const data = json || []
         if (data.length === 0) {

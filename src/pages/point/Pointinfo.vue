@@ -7,8 +7,9 @@
       </div>
     </group>
     <group title="基础信息">
-      <x-input id="style2" @on-focus="style2='color:#333'" class="s-input-required" :title='`<span style="${style2}">服务商名称</span>`' placeholder="点击填写" text-align="right" v-model="form.servicePointName" required></x-input>
-      <popup-picker  title="经营状态" placeholder="点击选择" show-name v-model="form.seviceState" :data=sevice_state></popup-picker>
+      <x-input id="style2" @on-focus="style2='color:#333'" class="input-required" :title='`<span style="${style2}">服务商名称</span>`' placeholder="点击填写" text-align="right" v-model="form.servicePointName" required></x-input>
+      <popup-picker id="style5" @on-show="style5='color:#333'" class="required" show-name
+        :title='`<span style="${style5}">经营状态</span>`' placeholder="点击选择" v-model="form.seviceState" :data=sevice_state></popup-picker>
       <div class="inline border-top">
         <x-address id="style3" @on-show="style3='color:#333'" @on-shadow-change="showForm" :title='`<span style="${style3}">经营地区</span>`' style="flex:1;" class="required left-padding" v-model="form.address" :list="addressData" placeholder="点击选择"></x-address>
         <div class="map-button" @click="openMapView">定位</div>
@@ -19,14 +20,17 @@
       <datetime id="style6" title="成立日期" placeholder="点击选择" show-name v-model="form.registerDate"></datetime>
       <datetime id="style7" title="经营期限" placeholder="点击选择" show-name v-model="form.operateDuration"></datetime>
       <x-address id="style8" title="服务区域" placeholder="点击选择" show-name v-model="form.serviceArea" :list="addressData"></x-address>
-      <popup-picker id="style9" title="主营产品" placeholder="点击选择" show-name v-model="form.mainProduct" :data=main_product></popup-picker>
+      <popup-picker id="style9" @on-show="style5='color:#333'" class="required" show-name
+        :title='`<span style="${style9}">主营产品</span>`' placeholder="点击选择" v-model="form.mainProduct" :data=main_product></popup-picker>
+      <cell id="style3" @on-show="style3='color:#333'" @click.native="showAddress=true" title='主营产品' class="cell-required" 
+          :value="form.mainProduct" is-link></cell>
       <popup-picker id="style10" title="农技能力" placeholder="点击选择" show-name v-model="form.agriculturalAbility" :data=agricultural_ability></popup-picker>
       <popup-picker id="style11" @on-show="style7='color:#333'" class="required" show-name
         :title='`<span style="${style7}">合作意向</span>`' placeholder="点击选择" v-model="form.coperationIntention" :data=customer_intention></popup-picker>
       <x-input id="style12" title="公司法人" placeholder="点击填写" text-align="right" v-model="form.personInCharge" required></x-input>
-      <x-input id="style13" @on-focus="style13='color:#333'"  class="s-input-required" :title='`<span style="${style13}">联系人</span>`' 
+      <x-input id="style13" @on-focus="style13='color:#333'" class="s-input-required" :title='`<span style="${style13}">联系人</span>`' 
           placeholder="点击填写" text-align="right" v-model="form.connectName" required></x-input>
-      <div id="style14" class="upload-title">经营照片</div>
+      <div id="style14" class="upload-title label-required">经营照片</div>
       <div class="upload-line">
         <file-upload v-show="!form.fileList" accept="image/*" ref="upload" @click.native="clickUpload(index)" @input-file="inputFile" @input-filter="inputFilter">
           <div class="upload-button">
@@ -119,7 +123,7 @@ export default {
         registerDate: '',
         operateDuration: '',
         serviceArea: [],
-        mainProduct: [],
+        mainProduct: '',
         agriculturalAbility: [],
         coperationIntention: [],
         personInCharge: '',
@@ -427,7 +431,7 @@ export default {
         connectPhone: this.form.connectPhone,
         remark: this.form.remark,
         seviceState: this.form.seviceState[0],
-        mainProduct: this.form.mainProduct[0]
+        mainProduct: this.form.mainProduct
       }
 
       this.$axios({
@@ -561,7 +565,7 @@ export default {
       this.form.detail = data.addressList[0].detail
       this.form.registerDate = data.registerDate
       this.form.serviceArea = [data.serviceArea]
-      this.form.mainProduct = [data.mainProduct + '']
+      this.form.mainProduct = data.mainProduct
       this.form.agriculturalAbility = [data.agriculturalAbility + '']
       this.form.coperationIntention = [data.coperationIntention + '']
       this.form.operateDuration = data.operateDuration
