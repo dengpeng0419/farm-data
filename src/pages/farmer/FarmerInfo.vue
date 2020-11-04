@@ -67,7 +67,7 @@
     <group title="经营履历">  
       <x-input title="总经营年限" placeholder="点击填写" text-align="right" v-model="form.operateDuration"></x-input>
       <div class="weui-cell">备注信息</div>
-      <x-textarea name="description" placeholder="请输入备注信息" v-model="form.remark"></x-textarea>
+      <x-textarea name="description" placeholder="请输入备注信息" v-model="form.remark" :max="300"></x-textarea>
     </group>
     <div class="inline-button">
       <x-button plain>取消</x-button>
@@ -87,7 +87,7 @@
     </div>
     <div v-transfer-dom>
       <x-dialog :show="showDialog" class="dialog-upload">
-        <div class="img-box" style="max-width:120% !important;">
+        <div style="max-width:120% !important;">
           <img :src="preImg" style="max-width:100%;padding:10px;box-sizing:border-box">
         </div>
         <div @click="showDialog=false">
@@ -96,7 +96,7 @@
       </x-dialog>
     </div>
     <div v-transfer-dom>
-      <popup v-model="showAddress" height="100%" position="bottom" @popup-header-height=0 @on-show="getProvince">
+      <popup v-model="showAddress" height="100%" position="bottom" @popup-header-height=0 @on-show="getProvince('init')">
         <popup-header
           style="position:fixed; top:0; left:0; width:100%; z-index:999"
           left-text="取消"
@@ -105,7 +105,7 @@
           :show-bottom-border="false"
           @on-click-left="showAddress = false"
           @on-click-right="chooseAddress"></popup-header>
-        <div style="position:fixed; top:44px; left:0; width:100%; height:44px; line-height:44px; padding-left:15px; z-index:999; background:#ddd">
+        <div style="position:fixed; top:44px; left:0; width:100%; height:44px; font-size: 18px; line-height:44px; padding-left:15px; z-index:999; background:#ddd">
           {{this.province}}{{this.city}}{{this.district}}{{this.town}}{{this.village}}
         </div>
         <checklist style="margin-top:88px" label-position="left" :options="addressOptionList" v-model="addressValue" :max="1" @on-change="addressOptionChange"></checklist>
@@ -332,8 +332,8 @@ export default {
       this.addressType === 5 && (this.village = label[0])
       this.getProvince()
     },
-    getProvince() {
-      id == 0 && (this.addressType = 0)
+    getProvince(param) {
+      param === 'init' && (this.addressType = 0)
       this.$axios({
         url: 'http://thegisguy.cn:8085/util/area?parentAreaId=' + this.addressId
       }).then(json => {
@@ -438,7 +438,7 @@ export default {
       for (let i = 1; i < 8; i++) {
         const value = this.form[this.checkStyle[i-1]]
         if (value == undefined || value.length === 0) {
-          !error && document.getElementById(`style${i}`).scrollIntoView()
+          !error && document.getElementById(`style${i}`) && document.getElementById(`style${i}`).scrollIntoView()
           error = true
           this[`style${i}`] = 'color:red;'
         }
@@ -685,7 +685,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="less">
-// @import '~vux/src/styles/close';
+@import '~vux/src/styles/close';
 .page-farmer-info {
   padding-bottom: 60px;
   .check-repeat {

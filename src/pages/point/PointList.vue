@@ -19,7 +19,7 @@
         </div>
         <div class="line-bottom">
           <div class="logo-go logo" @touchstart="showAlert('功能开发中')">跟进</div>
-          <div class="logo-edit logo" @touchstart="goEdit">编辑</div>
+          <div class="logo-edit logo" @touchstart="goEdit(item.servicePointId)">编辑</div>
           <a :href="`tel:${item.connectPhone}`" class="logo-tel logo">电话</a>
           <div class="logo-more" @touchstart="showAlert('功能开发中')">更多</div>
         </div>
@@ -72,9 +72,12 @@ export default {
         name: 'PointAdd'
       })
     },
-    goEdit() {
+    goEdit(id) {
       this.$router.push({
-        name: 'PointInfo'
+        name: 'PointInfo',
+        query: {
+          id: id
+        }
       })
     },
     showAlert(msg) {
@@ -143,27 +146,7 @@ export default {
     getPageData() {
       this.$axios({
         url: this.urls().init,
-        data: {
-          addTime: 3,
-          addressList: [
-            {
-              city: "1101",
-              detail: "某小区",
-              district: "110101",
-              latitude: 15.33,
-              longitude: 15.33,
-              province: "11",
-              town: "11010101",
-              village: "1101010101",
-              addressLevel: 3
-            }
-          ],
-          servicePointStateCondition: "1,2,3",
-          keyValue: "153",
-          orderType: 1,
-          sourceCondition: "1,2",
-          servicePointBelongs: 1
-        }
+        data: {}
       }).then(json => {
         const data = json || {}
         this.handleInitPage(data)

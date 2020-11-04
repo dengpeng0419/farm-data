@@ -7,32 +7,35 @@
       </div>
     </group>
     <group title="基础信息">
-      <x-input id="style2" @on-focus="style2='color:#333'" class="input-required" :title='`<span style="${style2}">服务商名称</span>`' placeholder="点击填写" text-align="right" v-model="form.servicePointName" required></x-input>
-      <popup-picker id="style5" @on-show="style5='color:#333'" class="required" show-name
-        :title='`<span style="${style5}">经营状态</span>`' placeholder="点击选择" v-model="form.seviceState" :data=sevice_state></popup-picker>
+      <x-input id="style2" @on-focus="style2='color:#333'" class="input-required" :title='`<span style="${style2}">服务商名称</span>`' 
+        placeholder="点击填写" text-align="right" v-model="form.servicePointName" required></x-input>
+      <popup-picker id="style3" @on-show="style3='color:#333'" class="required" show-name
+        :title='`<span style="${style3}">经营状态</span>`' placeholder="点击选择" v-model="form.seviceState" :data=sevice_state></popup-picker>
       <div class="inline border-top">
-        <x-address id="style3" @on-show="style3='color:#333'" @on-shadow-change="showForm" :title='`<span style="${style3}">经营地区</span>`' style="flex:1;" class="required left-padding" v-model="form.address" :list="addressData" placeholder="点击选择"></x-address>
+        <x-address id="style4" @on-show="style4='color:#333'" @on-shadow-change="showForm" :title='`<span style="${style4}">经营地区</span>`' 
+          style="flex:1;" class="required left-padding" v-model="form.address" :list="addressData" placeholder="点击选择"></x-address>
         <div class="map-button" @click="openMapView">定位</div>
       </div>
-      <x-input id="style4" @on-focus="style4='color:#333'" class="input-required" :title='`<span style="${style4}">详细经营地址</span>`' placeholder="点击填写" text-align="right" v-model="form.detail" required></x-input>
-      <popup-picker id="style5" @on-show="style5='color:#333'" class="required" show-name
-        :title='`<span style="${style5}">企业类型</span>`' placeholder="点击选择" v-model="form.enterpriseType" :data=enterprise_type></popup-picker>
-      <datetime id="style6" title="成立日期" placeholder="点击选择" show-name v-model="form.registerDate"></datetime>
-      <datetime id="style7" title="经营期限" placeholder="点击选择" show-name v-model="form.operateDuration"></datetime>
-      <x-address id="style8" title="服务区域" placeholder="点击选择" show-name v-model="form.serviceArea" :list="addressData"></x-address>
-      <popup-picker id="style9" @on-show="style5='color:#333'" class="required" show-name
-        :title='`<span style="${style9}">主营产品</span>`' placeholder="点击选择" v-model="form.mainProduct" :data=main_product></popup-picker>
-      <cell id="style3" @on-show="style3='color:#333'" @click.native="showAddress=true" title='主营产品' class="cell-required" 
+      <x-input id="style5" @on-focus="style5='color:#333'" class="input-required" :title='`<span style="${style5}">详细经营地址</span>`' 
+        placeholder="点击填写" text-align="right" v-model="form.detail" required></x-input>
+      <popup-picker id="style6" @on-show="style6='color:#333'" class="required" show-name
+        :title='`<span style="${style6}">企业类型</span>`' placeholder="点击选择" v-model="form.enterpriseType" :data=enterprise_type></popup-picker>
+      <datetime id="style7" title="成立日期" placeholder="点击选择" show-name v-model="form.registerDate"></datetime>
+      <datetime id="style8" title="经营期限" placeholder="点击选择" show-name v-model="form.operateDuration"></datetime>
+      <x-address id="style9" title="服务区域" placeholder="点击选择" show-name v-model="form.serviceArea" :list="addressData"></x-address>
+      <!-- <popup-picker id="style9" @on-show="style5='color:#333'" class="required" show-name
+        :title='`<span style="${style9}">主营产品</span>`' placeholder="点击选择" v-model="form.mainProduct" :data=main_product></popup-picker> -->
+      <cell id="style10" @click.native="showProducts=true;style10='color:#333 !important'" :style="style10" title='主营产品' class="cell-required" 
           :value="form.mainProduct" is-link></cell>
-      <popup-picker id="style10" title="农技能力" placeholder="点击选择" show-name v-model="form.agriculturalAbility" :data=agricultural_ability></popup-picker>
-      <popup-picker id="style11" @on-show="style7='color:#333'" class="required" show-name
-        :title='`<span style="${style7}">合作意向</span>`' placeholder="点击选择" v-model="form.coperationIntention" :data=customer_intention></popup-picker>
-      <x-input id="style12" title="公司法人" placeholder="点击填写" text-align="right" v-model="form.personInCharge" required></x-input>
-      <x-input id="style13" @on-focus="style13='color:#333'" class="s-input-required" :title='`<span style="${style13}">联系人</span>`' 
+      <popup-picker id="style11" title="农技能力" placeholder="点击选择" show-name v-model="form.agriculturalAbility" :data=agricultural_ability></popup-picker>
+      <popup-picker id="style12" @on-show="style12='color:#333'" class="required" show-name
+        :title='`<span style="${style12}">合作意向</span>`' placeholder="点击选择" v-model="form.coperationIntention" :data=customer_intention></popup-picker>
+      <x-input id="style13" title="公司法人" placeholder="点击填写" text-align="right" v-model="form.personInCharge" required></x-input>
+      <x-input id="style14" @on-focus="style14='color:#333'" class="s-input-required" :title='`<span style="${style14}">联系人</span>`' 
           placeholder="点击填写" text-align="right" v-model="form.connectName" required></x-input>
-      <div id="style14" class="upload-title label-required">经营照片</div>
+      <div id="style15" class="upload-title div-required" :style="style15">经营照片</div>
       <div class="upload-line">
-        <file-upload v-show="!form.fileList" accept="image/*" ref="upload" @click.native="clickUpload(index)" @input-file="inputFile" @input-filter="inputFilter">
+        <file-upload v-show="!form.fileList" accept="image/*" ref="upload" @click.native="clickUpload" @input-file="inputFile" @input-filter="inputFilter">
           <div class="upload-button">
             <div class="upload-icon"></div>
             <div class="upload-text">上传</div>
@@ -47,10 +50,12 @@
           <div class="desc">示例图</div>
         </div>
       </div>
-      <popup-picker id="style15" @on-show="style15='color:#333'" class="required" show-name
-        :title='`<span style="${style9}">客户来源</span>`' placeholder="点击选择" v-model="form.source" :data=customer_source></popup-picker>
-      <popup-picker id="style16" @on-show="style16='color:#333'" class="required person" show-name
-        :title='`<span style="${style7}">归属人员</span>`' placeholder="点击选择" v-model="form.maintainMan" :data=personList></popup-picker>
+      <popup-picker id="style16" @on-show="style16='color:#333'" class="required" show-name
+        :title='`<span style="${style16}">客户来源</span>`' placeholder="点击选择" v-model="form.source" :data=customer_source></popup-picker>
+      <popup-picker id="style17" @on-show="style17='color:#333'" class="required person" show-name
+        :title='`<span style="${style17}">归属人员</span>`' placeholder="点击选择" v-model="form.maintainMan" :data=personList></popup-picker>
+      <div class="weui-cell">备注信息</div>
+      <x-textarea name="description" placeholder="请输入备注信息" v-model="form.remark" :max="300"></x-textarea>
     </group>
     <div class="inline-button">
       <x-button plain>取消</x-button>
@@ -77,6 +82,19 @@
           <span class="vux-close" style="margin-bottom: 10px"></span>
         </div>
       </x-dialog>
+    </div>
+    <div v-transfer-dom>
+      <popup v-model="showProducts" height="100%" position="bottom" @popup-header-height=0>
+        <popup-header
+          style="position:fixed; top:0; left:0; width:100%; z-index:999"
+          left-text="取消"
+          right-text="确定"
+          title="选择主营产品"
+          :show-bottom-border="false"
+          @on-click-left="showProducts = false"
+          @on-click-right="sureProducts"></popup-header>
+        <checklist style="margin-top:44px" label-position="left" :options="main_product" v-model="productsValue"></checklist>
+      </popup>
     </div>
     <div v-transfer-dom>
       <popup v-model="showMap" height="100%" style="overflow:hidden" position="bottom" @popup-header-height=0>
@@ -123,15 +141,18 @@ export default {
         registerDate: '',
         operateDuration: '',
         serviceArea: [],
-        mainProduct: '',
+        mainProduct: '点击选择',
         agriculturalAbility: [],
         coperationIntention: [],
         personInCharge: '',
         connectName: '',
         fileList: '',
         source: [],
-        maintainMan: []
+        maintainMan: [],
+        remark: ''
       },
+      showProducts: false,
+      productsValue: [],
       fileUrlList: [],
       sevice_state: [[{
         name: '续存',
@@ -171,25 +192,7 @@ export default {
         name: '其他',
         value: '4'
       }]],
-      main_product: [[{
-        name: '化肥',
-        value: '1'
-      }, {
-        name: '农药',
-        value: '2'
-      }, {
-        name: '种子',
-        value: '3'
-      }, {
-        name: '农机',
-        value: '4'
-      }, {
-        name: '农技',
-        value: '5'
-      }, {
-        name: '飞防',
-        value: '6'
-      }]],
+      main_product: ['化肥', '农药', '种子', '农机', '农技', '飞防'],
       agricultural_ability: [[{
         name: '育苗',
         value: '1'
@@ -266,11 +269,29 @@ export default {
       style14: '',
       style15: '',
       style16: '',
-      checkStyle: ['connectPhone', 'servicePointName', 'address', 'detail', 'enterpriseType', 'mainProduct', 'coperationIntention'],
+      style17: '',
+      checkStyle: [
+        'connectPhone', 
+        'servicePointName', 
+        'seviceState',
+        'address', 
+        'detail', 
+        'enterpriseType',
+        'registerDate',
+        'operateDuration',
+        'serviceArea',
+        'mainProduct',
+        'agriculturalAbility', 
+        'coperationIntention',
+        'personInCharge',
+        'connectName',
+        'fileList',
+        'source',
+        'maintainMan'
+      ],
       chooseRef: '',
       chooseProp: '',
       fileListName: 'fileList',
-      chooseFile: -1,
       operateLine: -1,
       location: {
         lng: 116.404,
@@ -286,6 +307,8 @@ export default {
     }
   },
   mounted() {
+    this.id = this.$route.query.id
+    console.log(this.id)
     if (this.$route.name === 'PointInfo') {
       this.getPageData()
     }
@@ -293,6 +316,10 @@ export default {
   methods: {
     showForm() {
       console.log(this.form)
+    },
+    sureProducts() {
+      this.showProducts = false
+      this.form.mainProduct = this.productsValue.join("，")
     },
     checkRepeat(connectPhone) {
       const reg = /^1\d{10}$/
@@ -309,7 +336,6 @@ export default {
         url: this.urls().checkconnectPhone+'?connectPhoneNum='+connectPhone+'&tableNum=1'
       }).then(json => {
         console.log(json)
-        // this.uploadForm[this.chooseFile].fileUrl = json
       }).catch(err => {
         this.pageShow = true
       })
@@ -341,24 +367,12 @@ export default {
       })
     },
     addHistory() {
-      this.uploadForm.push({
-        operateYear: '',
-        operateQuarter: [],
-        operateNum: '',
-        plantingType: [],
-        averageRent: '',
-        plantingSubType: [],
-        fileList: '',
-        style1: '',
-        style2: '',
-        style3: ''
-      })
+
     },
     deleteLine(index) {
-      this.uploadForm.splice(index, 1)
     },
-    clickUpload(index) {
-      this.chooseFile = index
+    clickUpload() {
+      this.style15 = ''
     },
     clickPicker(name, prop) {
       this.chooseRef = name
@@ -366,54 +380,27 @@ export default {
     },
     save() {
       let error = false
-      for (let i = 1; i < 8; i++) {
-        const value = this.form[this.checkStyle[i-1]]
-        if (value == undefined || value.length === 0) {
-          !error && document.getElementById(`style${i}`).scrollIntoView()
+      for (let i = 1; i < 18; i++) {
+        const value = this.form[this.checkStyle[i - 1]]
+        if (value == undefined || value.length === 0 || value === '点击选择') {
+          !error && document.getElementById(`style${i}`) && document.getElementById(`style${i}`).scrollIntoView()
           error = true
-          this[`style${i}`] = 'color:red;'
+          this[`style${i}`] = 'color: red !important;'
         }
-      }
-      for (let j = 0; j < this.uploadForm.length; j++) {
-        if (this.uploadForm[j].operateYear == undefined || this.uploadForm[j].operateYear.length === 0) {
-          !error && document.getElementById(`style01${j}`).scrollIntoView()
-          error = true
-          this.uploadForm[j].style1 = 'color: red'
-        } else if (this.uploadForm[j].operateNum == undefined || this.uploadForm[j].operateNum.length === 0) {
-          !error && document.getElementById(`style02${j}`).scrollIntoView()
-          error = true
-          this.uploadForm[j].style2 = 'color: red'
-        } else if (this.uploadForm[j].plantingType == undefined || this.uploadForm[j].plantingType.length === 0) {
-          !error && document.getElementById(`style03${j}`).scrollIntoView()
-          error = true
-          this.uploadForm[j].style3 = 'color: red'
-        } 
       }
       error == false && this.saveForm()
     },
     saveForm() {
-      const operateInfoDetails = []
-      this.uploadForm.map(item => {
-        const obj = {}
-        obj.operateYear = item.operateYear
-        obj.operateQuarter = item.operateQuarter[0]
-        obj.operateNum = item.operateNum
-        obj.plantingType = item.plantingType[0]
-        obj.averageRent = item.averageRent
-        obj.plantingSubType = item.plantingSubType[0]
-        obj.operatePictureUrl = item.fileList
-        operateInfoDetails.push(obj)
-      })
       const data = {
         customerId: 1,
         addressList: [{
-          addressType : 0,
-          city: this.form.address[1],
+          addressType : 4,
+          city: this.form.serviceArea[1],
           detail: this.form.detail,
-          district: this.form.address[2],
+          district: this.form.serviceArea[2],
           latitude: 0,
           longitude: 0,
-          province: this.form.address[0],
+          province: this.form.serviceArea[0],
           remark: '',
           town: 'string',
           village: 'string'
@@ -422,16 +409,18 @@ export default {
         enterpriseType: this.form.enterpriseType[0],
         customerType: this.form.customerType,
         coperationIntention: this.form.coperationIntention[0],
-        operateInfo: {
-          operateInfold: this.form.operateInfoId,
-          operateDuration: this.form.operateDuration,
-          operateRemark: this.form.remark
-        },
-        operateInfoDetails: operateInfoDetails,
         connectPhone: this.form.connectPhone,
         remark: this.form.remark,
         seviceState: this.form.seviceState[0],
-        mainProduct: this.form.mainProduct
+        mainProduct: this.form.mainProduct,
+        registerDate: this.form.registerDate,
+        operateDuration: this.form.operateDuration,
+        agriculturalAbility: this.form.agriculturalAbility[0],
+        personInCharge: this.form.personInCharge,
+        connectName: this.form.connectName,
+        servicePictureUrl: this.form.fileUrl,
+        source: this.form.source[0],
+        maintainMan: this.form.maintainMan[0]
       }
 
       this.$axios({
@@ -439,9 +428,8 @@ export default {
         data: data
       }).then(json => {
         this.$router.replace({
-          name: 'FarmerList'
+          name: 'PointList'
         })
-        // this.uploadForm[this.chooseFile].fileUrl = json
       }).catch(err => {
         this.pageShow = true
       })
@@ -483,7 +471,7 @@ export default {
       // };
     },
     removeImage() {
-      this.form.fileList = []
+      this.form.fileList = ''
     },
     // 压缩文件
     compressFile(files) {
@@ -504,8 +492,8 @@ export default {
           // data.append('files', blob);
           const data = new FormData();
           data.append('files', files);
-          this.uploadForm[this.chooseFile].fileList = dataUrl.split(',')[1]
-          this.uploadForm = JSON.parse(JSON.stringify(this.uploadForm))
+          this.form.fileList = dataUrl.split(',')[1]
+          this.fForm = JSON.parse(JSON.stringify(this.form))
           this.uploadFile(data)
         }
       })
@@ -516,22 +504,18 @@ export default {
         url: this.urls().upload,
         data: data
       }).then(json => {
-        this.uploadForm[this.chooseFile].fileUrl = json
+        this.form.fileUrl = json
       }).catch(err => {
         this.pageShow = true
       })
     },
     getOperateYear(value) {
-      this.uploadForm[0].style1 = 'color: #333'
       value === '0' && (this.moreYear = true)
-      console.log(this.uploadForm)
     },
     moreYearChange(index) {
       this.operateLine = index
     },
     chooseMoreYear(value) {
-      this.uploadForm[this.operateLine].operateYear = value[0]
-      console.log(this.uploadForm)
     },
     showAlert(msg) {
       this.$vux.alert.show({
@@ -547,7 +531,7 @@ export default {
     },
     getPageData() {
       this.$axios({
-        url: this.urls().init
+        url: this.urls().init + this.id
       }).then(json => {
         const data = json || {}
         this.handleInitPage(data)
@@ -556,16 +540,15 @@ export default {
       })
     },
     handleInitPage(data) {
-      console.log(data)
       this.form.seviceState = [data.seviceState + '']
       this.form.connectPhone = data.connectPhone
       this.form.servicePointName = data.servicePointName
       this.form.enterpriseType = [data.enterpriseType + '']
-      this.form.address = [data.addressList[0].province, data.addressList[0].city, data.addressList[0].district]
+      this.form.serviceArea = [data.addressList[0].province, data.addressList[0].city, data.addressList[0].district]
       this.form.detail = data.addressList[0].detail
       this.form.registerDate = data.registerDate
-      this.form.serviceArea = [data.serviceArea]
       this.form.mainProduct = data.mainProduct
+      this.productsValue = data.mainProduct.split('，')
       this.form.agriculturalAbility = [data.agriculturalAbility + '']
       this.form.coperationIntention = [data.coperationIntention + '']
       this.form.operateDuration = data.operateDuration
@@ -573,6 +556,7 @@ export default {
       this.form.connectName = data.connectName
       this.form.source = [data.source + '']
       this.form.maintainMan = [data.maintainMan + '']
+      this.form.remark = fata.remark
     },
     getListName(value) {
       this.sys_user_seviceState.map(item => {
@@ -583,9 +567,9 @@ export default {
     },
     urls() {
       return {
-        init: `http://thegisguy.cn:8085/system/point/queryOne?servicePointId=1`,
+        init: `http://thegisguy.cn:8085/system/point/queryOne?servicePointId=`,
         upload: `http://thegisguy.cn:8085/commom/file/uploadPhoto`,
-        save: `http://thegisguy.cn:8085/system/customer/edit`,
+        save: `http://thegisguy.cn:8085/system/point/add`,
         checkconnectPhone: `http://thegisguy.cn:8085/util/exist`
         // upload: `${process.env.URL.api}upload`,
       }
@@ -596,7 +580,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="less">
-// @import '~vux/src/styles/close';
+@import '~vux/src/styles/close';
 .page-point-info {
   padding-bottom: 60px;
   .check-repeat {
@@ -700,6 +684,30 @@ export default {
       }
     }
   }
+  .cell-required {
+    .weui-cell__ft {
+      max-width: 120px;
+      overflow: scroll;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .vux-cell-bd {
+      position: relative;
+      &::before {
+        position: absolute;
+        content: '';
+        top: 50%;
+        margin-top: -7px;
+        left: 75px;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background-image: url(../../assets/img/icon_star.png);
+        background-size: 100% 100%;
+        background-repeat: no-repeat;
+      }
+    }
+  }
   .div-required {
     position: relative;
     &::before {
@@ -707,7 +715,7 @@ export default {
       content: '';
       top: 50%;
       margin-top: -7px;
-      right: -16px;
+      left: 70px;
       width: 12px;
       height: 12px;
       border-radius: 50%;
