@@ -11,9 +11,14 @@
         placeholder="点击填写" text-align="right" v-model="form.servicePointName" required></x-input>
       <popup-picker id="style3" @on-show="style3='color:#333'" class="required" show-name
         :title='`<span style="${style3}">经营状态</span>`' placeholder="点击选择" v-model="form.seviceState" :data=sevice_state></popup-picker>
-      <div class="inline border-top">
+      <!-- <div class="inline border-top">
         <x-address id="style4" @on-show="style4='color:#333'" @on-shadow-change="showForm" :title='`<span style="${style4}">经营地区</span>`' 
           style="flex:1;" class="required left-padding" v-model="form.address" :list="addressData" placeholder="点击选择"></x-address>
+        <div class="map-button" @click="openMapView">定位</div>
+      </div> -->
+      <div class="inline border-top">
+        <cell id="style4" @on-show="style4='color:#333'" @click.native="showAddress=true" title='经营地区' style="flex:1; margin-left: -15px" class="cell-required" 
+          :value="`${province}${city}${district}${town}${village}`" is-link></cell>
         <div class="map-button" @click="openMapView">定位</div>
       </div>
       <x-input id="style5" @on-focus="style5='color:#333'" class="input-required" :title='`<span style="${style5}">详细经营地址</span>`' 
@@ -42,7 +47,7 @@
           </div>
         </file-upload>
         <div class="upload-preview" v-show="form.fileList">
-          <img @click="showPreview('data:image/png;base64,'+form.fileList)" class="preview-image" :src="'data:image/png;base64,'+form.fileList" />
+          <img @click="showPreview(form.fileList)" class="preview-image" :src="form.fileList" />
           <div class="close-image" @click="removeImage"></div>
         </div>
         <div class="upload-demo" @click="showPreview(demoImage)">
@@ -112,6 +117,22 @@
         <div style="position:absolute; bottom:0; left:0; width: 100%; background:#fff; padding:10px;">{{address}}</div>
       </popup>
     </div>
+    <div v-transfer-dom>
+      <popup v-model="showAddress" height="100%" position="bottom" @popup-header-height=0 @on-show="getProvince('init')">
+        <popup-header
+          style="position:fixed; top:0; left:0; width:100%; z-index:999"
+          left-text="取消"
+          right-text="确定"
+          title="选择位置"
+          :show-bottom-border="false"
+          @on-click-left="showAddress = false"
+          @on-click-right="chooseAddress"></popup-header>
+        <div style="position:fixed; top:44px; left:0; width:100%; height:44px; font-size: 18px; line-height:44px; padding-left:15px; z-index:999; background:#ddd">
+          {{this.province}}{{this.city}}{{this.district}}{{this.town}}{{this.village}}
+        </div>
+        <checklist style="margin-top:88px" label-position="left" :options="addressOptionList" v-model="addressValue" :max="1" @on-change="addressOptionChange"></checklist>
+      </popup>
+    </div>
   </div>
 </template>
 
@@ -136,7 +157,7 @@ export default {
         connectPhone: '',
         servicePointName: '',
         enterpriseType: [],
-        address: [],
+        address: 'default',
         detail: '',
         registerDate: '',
         operateDuration: '',
@@ -300,20 +321,82 @@ export default {
       zoom: 12.8,
       addressKeyword: '',
       address: '',
-      district: "江宁区", 
-      city: "南京市", 
-      province: "江苏省",
-      showMap: false
+      district: '',
+      city: '',
+      province: '点击选择',
+      town: '',
+      village: '',
+      showMap: false,
+      showAddress: false,
+      addressOptionList: [],
+      addressValue: [],
+      addressId: 0,
+      oldImage: ''
     }
   },
   mounted() {
     this.id = this.$route.query.id
     console.log(this.id)
     if (this.$route.name === 'PointInfo') {
+      this.servicePointId = this.$route.query.id
       this.getPageData()
     }
   },
   methods: {
+    chooseAddress() {
+      this.showAddress = false
+    },
+    addressOptionChange(value, label) {
+      console.log(this.addressType, value, label)
+      if (!value[0]) {
+        return
+      }
+      this.addressId = value[0]
+      if (this.addressType === 1) {
+        this.province = label[0]
+        this.provinceCode = value[0]
+      }
+      if (this.addressType === 2) {
+        this.city = label[0]
+        this.cityCode = value[0]
+      }
+      if (this.addressType === 3) {
+        this.district = label[0]
+        this.districtCode = value[0]
+      }
+      if (this.addressType === 4) {
+        this.town = label[0]
+        this.townCode = value[0]
+      }
+      if (this.addressType === 5) {
+        this.village = label[0]
+        this.villageCode = value[0]
+      }
+      this.address = this.province + this.city + this.district + this.town + this.village
+      this.getProvince()
+    },
+    getProvince(param) {
+      param === 'init' && (this.addressType = 0)
+      this.$axios({
+        url: 'http://thegisguy.cn:8085/util/area?parentAreaId=' + this.addressId
+      }).then(json => {
+        const data = json || []
+        if (data.length === 0) {
+          this.showAddress = false
+          return
+        }
+        this.addressType ++
+        this.addressOptionList = []
+        data.map(item => {
+          const obj = {}
+          obj.key = item.areaCode
+          obj.value = item.areaName
+          this.addressOptionList.push(obj)
+        })
+      }).catch(error => {
+        console.log(error)
+      })
+    },
     showForm() {
       console.log(this.form)
     },
@@ -366,11 +449,6 @@ export default {
         this.district = res.addressComponents.district
       })
     },
-    addHistory() {
-
-    },
-    deleteLine(index) {
-    },
     clickUpload() {
       this.style15 = ''
     },
@@ -392,18 +470,29 @@ export default {
     },
     saveForm() {
       const data = {
-        customerId: 1,
+        servicePointId: this.servicePointId || undefined,
         addressList: [{
+          addressType : 3,
+          city: this.cityCode,
+          detail: this.form.detail,
+          district: this.districtCode,
+          latitude: 0,
+          longitude: 0,
+          province: this.provinceCode,
+          remark: '',
+          town: this.townCode,
+          village: this.villageCode
+        },{
           addressType : 4,
           city: this.form.serviceArea[1],
-          detail: this.form.detail,
+          detail: 'this.form.detail',
           district: this.form.serviceArea[2],
           latitude: 0,
           longitude: 0,
           province: this.form.serviceArea[0],
           remark: '',
-          town: 'string',
-          village: 'string'
+          town: 'this.townCode',
+          village: 'this.villageCode'
         }],
         servicePointName: this.form.servicePointName,
         enterpriseType: this.form.enterpriseType[0],
@@ -424,7 +513,7 @@ export default {
       }
 
       this.$axios({
-        url: this.urls().save,
+        url: this.$route.name === 'PointInfo' ? this.urls().edit : this.urls().add,
         data: data
       }).then(json => {
         this.$router.replace({
@@ -435,6 +524,7 @@ export default {
       })
     },
     showPreview(fileList) {
+      fileList.indexOf('https://') < 0 && (fileList = 'data:image/png;base64,' + fileList)
       this.showDialog = true
       this.preImg = fileList
       console.log(this.form)
@@ -471,6 +561,7 @@ export default {
       // };
     },
     removeImage() {
+      this.oldImage = ''
       this.form.fileList = ''
     },
     // 压缩文件
@@ -544,7 +635,6 @@ export default {
       this.form.connectPhone = data.connectPhone
       this.form.servicePointName = data.servicePointName
       this.form.enterpriseType = [data.enterpriseType + '']
-      this.form.serviceArea = [data.addressList[0].province, data.addressList[0].city, data.addressList[0].district]
       this.form.detail = data.addressList[0].detail
       this.form.registerDate = data.registerDate
       this.form.mainProduct = data.mainProduct
@@ -556,7 +646,25 @@ export default {
       this.form.connectName = data.connectName
       this.form.source = [data.source + '']
       this.form.maintainMan = [data.maintainMan + '']
-      this.form.remark = fata.remark
+      this.form.remark = data.remark
+      this.form.fileList = data.servicePictureUrl
+      const addressList = data.addressList || []
+      addressList.map(item => {
+        if (item.addressType === 3) { // 经营地址
+          this.province = item.provinceName
+          this.provinceCode = item.province
+          this.city = item.cityName
+          this.cityCode = item.city
+          this.district = item.districtName
+          this.districtCode = item.district
+          this.town = item.townName
+          this.townCode = item.town
+          this.village = item.villageName
+          this.villageCode = item.village
+        } else if (item.addressType === 4) {
+          this.form.serviceArea = [item.province, item.city, item.district]
+        }
+      })
     },
     getListName(value) {
       this.sys_user_seviceState.map(item => {
@@ -568,8 +676,9 @@ export default {
     urls() {
       return {
         init: `http://thegisguy.cn:8085/system/point/queryOne?servicePointId=`,
+        edit: 'http://thegisguy.cn:8085/system/point/edit',
         upload: `http://thegisguy.cn:8085/commom/file/uploadPhoto`,
-        save: `http://thegisguy.cn:8085/system/point/add`,
+        add: `http://thegisguy.cn:8085/system/point/add`,
         checkconnectPhone: `http://thegisguy.cn:8085/util/exist`
         // upload: `${process.env.URL.api}upload`,
       }

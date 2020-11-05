@@ -19,7 +19,7 @@
         </div>
         <div class="line-bottom">
           <div class="logo-go logo" @touchstart="showAlert('功能开发中')">跟进</div>
-          <div class="logo-edit logo" @touchstart="goEdit">编辑</div>
+          <div class="logo-edit logo" @touchstart="goEdit(item.customerId)">编辑</div>
           <a :href="`tel:${item.phone}`" class="logo-tel logo">电话</a>
           <div class="logo-more" @touchstart="showAlert('功能开发中')">更多</div>
         </div>
@@ -72,9 +72,12 @@ export default {
         name: 'FarmerAdd'
       })
     },
-    goEdit() {
+    goEdit(id) {
       this.$router.push({
-        name: 'FarmerInfo'
+        name: 'FarmerInfo',
+        query: {
+          id: id
+        }
       })
     },
     showAlert(msg) {

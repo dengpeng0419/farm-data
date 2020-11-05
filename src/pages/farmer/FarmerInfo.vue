@@ -10,7 +10,6 @@
       <x-input id="style2" @on-focus="style2='color:#333'" class="s-input-required" :title='`<span style="${style2}">客户姓名</span>`' placeholder="点击填写" text-align="right" v-model="form.customerName" required></x-input>
       <popup-picker  title="客户性别" placeholder="点击选择" show-name v-model="form.sex" :data=sys_user_sex></popup-picker>
       <div class="inline border-top">
-        <!-- <x-address id="style3" @on-show="style3='color:#333'" @on-shadow-change="showForm" :title='`<span style="${style3}">经营地区</span>`' style="flex:1;" class="required left-padding" v-model="form.address" :list="addressData" placeholder="点击选择"></x-address> -->
         <cell id="style3" @on-show="style3='color:#333'" @click.native="showAddress=true" title='经营地区' style="flex:1; margin-left: -15px" class="cell-required" 
           :value="`${province}${city}${district}${town}${village}`" is-link></cell>
         <div class="map-button" @click="openMapView">定位</div>
@@ -305,6 +304,7 @@ export default {
   },
   mounted() {
     if (this.$route.name === 'FarmerInfo') {
+      this.customerId = this.$route.query.id
       this.getPageData()
     }
   },
@@ -474,7 +474,7 @@ export default {
         operateInfoDetails.push(obj)
       })
       const data = {
-        customerId: 1,
+        customerId: this.customerId || undefined,
         addressList: [{
           addressType : 4,
           city: this.form.address[1],
