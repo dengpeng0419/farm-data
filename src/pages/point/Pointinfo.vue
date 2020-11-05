@@ -484,15 +484,16 @@ export default {
           village: this.villageCode
         },{
           addressType : 4,
-          city: this.form.serviceArea[1],
+          city: this.form.serviceArea[1].substr(2,4),
           detail: 'this.form.detail',
           district: this.form.serviceArea[2],
           latitude: 0,
           longitude: 0,
-          province: this.form.serviceArea[0],
+          province: this.form.serviceArea[0].substr(0,2),
           remark: '',
           town: 'this.townCode',
-          village: 'this.villageCode'
+          village: 'this.villageCode',
+          addressLevel: 3
         }],
         servicePointName: this.form.servicePointName,
         enterpriseType: this.form.enterpriseType[0],
