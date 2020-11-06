@@ -24,11 +24,11 @@
           <div class="logo-more" @touchstart="showAlert('功能开发中')">更多</div>
         </div>
       </div>
-      <loading v-model="showLoading" text="获取数据中"></loading>
+      <!-- <loading v-model="showLoading" text="获取数据中"></loading>
       <div v-if="list&&list.length>2">
         <load-more v-if="showloadmore" :tip="tip"></load-more>
         <load-more v-else :show-loading="false" :tip="tip"></load-more>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
@@ -146,27 +146,7 @@ export default {
     getPageData() {
       this.$axios({
         url: this.urls().init,
-        data: {
-          addTime: 3,
-          addressList: [
-            {
-              city: "1101",
-              detail: "某小区",
-              district: "110101",
-              latitude: 15.33,
-              longitude: 15.33,
-              province: "11",
-              town: "11010101",
-              village: "1101010101",
-              addressLevel: 3
-            }
-          ],
-          customerStateCondition: "1,2,3",
-          keyValue: "153",
-          orderType: 1,
-          sourceCondition: "1,2",
-          customerBelongs: 1
-        }
+        data: {}
       }).then(json => {
         const data = json || {}
         this.handleInitPage(data)
@@ -194,7 +174,8 @@ export default {
   min-height: 100vh;
   position: relative;
   .add-farmer {
-    position: absolute;
+    position: fixed;
+    z-index: 99999;
     bottom: 100px;
     right: 20px;
     width: 40px;

@@ -52,7 +52,7 @@
             </div>
           </file-upload>
           <div class="upload-preview" v-show="uploadForm[index].fileList">
-            <img @click="showPreview('data:image/png;base64,'+uploadForm[index].fileList)" class="preview-image" :src="'data:image/png;base64,'+uploadForm[index].fileList" />
+            <img @click="showPreview(uploadForm[index].fileList)" class="preview-image" :src="uploadForm[index].fileList" />
             <div class="close-image" @click="removeImage"></div>
           </div>
           <div class="upload-demo" @click="showPreview(demoImage)">
@@ -156,7 +156,7 @@ export default {
         phone: '',
         customerName: '',
         customerState: [],
-        address: [],
+        address: 'default',
         detail: '',
         source: [],
         maintainMan: [],
@@ -325,11 +325,28 @@ export default {
         return
       }
       this.addressId = value[0]
-      this.addressType === 1 && (this.province = label[0])
-      this.addressType === 2 && (this.city = label[0])
-      this.addressType === 3 && (this.district = label[0])
-      this.addressType === 4 && (this.town = label[0])
-      this.addressType === 5 && (this.village = label[0])
+      this.addressId = value[0]
+      if (this.addressType === 1) {
+        this.province = label[0]
+        this.provinceCode = value[0]
+      }
+      if (this.addressType === 2) {
+        this.city = label[0]
+        this.cityCode = value[0]
+      }
+      if (this.addressType === 3) {
+        this.district = label[0]
+        this.districtCode = value[0]
+      }
+      if (this.addressType === 4) {
+        this.town = label[0]
+        this.townCode = value[0]
+      }
+      if (this.addressType === 5) {
+        this.village = label[0]
+        this.villageCode = value[0]
+      }
+      this.address = this.province + this.city + this.district + this.town + this.village
       this.getProvince()
     },
     getProvince(param) {
@@ -470,27 +487,27 @@ export default {
         obj.plantingType = item.plantingType[0]
         obj.averageRent = item.averageRent
         obj.plantingSubType = item.plantingSubType[0]
-        obj.operatePictureUrl = item.fileList
+        obj.operatePictureUrl = item.fileUrl
         operateInfoDetails.push(obj)
       })
       const data = {
         customerId: this.customerId || undefined,
         addressList: [{
-          addressType : 4,
-          city: this.form.address[1],
+          addressType : 2,
+          city: this.cityCode,
           detail: this.form.detail,
-          district: this.form.address[2],
+          district: this.districtCode,
           latitude: 0,
           longitude: 0,
-          province: this.form.address[0],
+          province: this.provinceCode,
           remark: '',
-          town: 'string',
-          village: 'string',
-          addressLevel: 3
+          town: this.townCode,
+          village: this.villageCode,
+          addressLevel: 5
         }],
         customerName: this.form.customerName,
         customerState: this.form.customerState[0],
-        customerType: this.form.customerType,
+        customerType: this.form.customerType || 1,
         maintainMan: this.form.maintainMan[0],
         operateInfo: {
           operateInfold: this.form.operateInfoId,
@@ -505,7 +522,7 @@ export default {
       }
 
       this.$axios({
-        url: this.urls().save,
+        url: this.$route.name === 'FarmerInfo' ? this.urls().edit : this.urls().add,
         data: data
       }).then(json => {
         this.$router.replace({
@@ -517,9 +534,9 @@ export default {
       })
     },
     showPreview(fileList) {
+      fileList.indexOf('https://') < 0 && (fileList = 'data:image/png;base64,' + fileList)
       this.showDialog = true
       this.preImg = fileList
-      console.log(this.form)
     },
 
     inputFile: function (newFile, oldFile) {
@@ -587,6 +604,7 @@ export default {
         data: data
       }).then(json => {
         this.uploadForm[this.chooseFile].fileUrl = json
+        this.uploadForm[this.chooseFile].fileList = json
       }).catch(err => {
         this.pageShow = true
       })
@@ -617,7 +635,7 @@ export default {
     },
     getPageData() {
       this.$axios({
-        url: this.urls().init
+        url: this.urls().init + this.customerId
       }).then(json => {
         const data = json || {}
         this.handleInitPage(data)
@@ -661,6 +679,22 @@ export default {
         this.uploadForm[index].plantingType = [item.plantingType + '']
         this.uploadForm[index].averageRent = item.averageRent
         this.uploadForm[index].plantingSubType = [item.plantingSubType + '']
+        this.uploadForm[index].fileList = item.operatePictureUrl
+      })
+      const addressList = data.addressList || []
+      addressList.map(item => {
+        if (item.addressType === 2) { // 经营地址
+          this.province = item.provinceName
+          this.provinceCode = item.province
+          this.city = item.cityName
+          this.cityCode = item.city
+          this.district = item.districtName
+          this.districtCode = item.district
+          this.town = item.townName
+          this.townCode = item.town
+          this.village = item.villageName
+          this.villageCode = item.village
+        }
       })
     },
     getListName(value) {
@@ -672,9 +706,10 @@ export default {
     },
     urls() {
       return {
-        init: `http://thegisguy.cn:8085/system/customer/queryOne?customerId=1`,
+        init: `http://thegisguy.cn:8085/system/customer/queryOne?customerId=`,
         upload: `http://thegisguy.cn:8085/commom/file/uploadPhoto`,
-        save: `http://thegisguy.cn:8085/system/customer/edit`,
+        edit: `http://thegisguy.cn:8085/system/customer/edit`,
+        add: 'http://thegisguy.cn:8085/system/customer/add',
         checkPhone: `http://thegisguy.cn:8085/util/exist`
         // upload: `${process.env.URL.api}upload`,
       }

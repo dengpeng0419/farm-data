@@ -336,7 +336,6 @@ export default {
   },
   mounted() {
     this.id = this.$route.query.id
-    console.log(this.id)
     if (this.$route.name === 'PointInfo') {
       this.servicePointId = this.$route.query.id
       this.getPageData()

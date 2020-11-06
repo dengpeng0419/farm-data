@@ -10,7 +10,7 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'HelloWorld',
+      name: 'Home',
       component: HelloWorld
     },
     {
@@ -47,6 +47,11 @@ export default new Router({
       path: '/point/add',
       name: 'PointAdd',
       component: () => import('@/pages/point/PointInfo')
+    },
+    {
+      path: '/login',
+      name: 'Login',
+      component: () => import('@/pages/Login')
     },
   ]
 })

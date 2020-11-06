@@ -9,7 +9,7 @@ var HtmlWebpackPlugin = require('html-webpack-plugin')
 var ExtractTextPlugin = require('extract-text-webpack-plugin')
 var OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin')
 var packageData       = require('../package');
-var ZipPlugin         = require('zip-webpack-plugin');
+// var ZipPlugin         = require('zip-webpack-plugin');
 // format date
 const formatDate = d => {
   const year  = d.getFullYear();

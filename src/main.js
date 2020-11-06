@@ -8,7 +8,7 @@ import ajax from './components/ajax'
 import router from './router'
 import { Group, Cell, LoadMore, Loading, XInput, XAddress, Selector, 
   PopupPicker, Checker, CheckerItem, Popup, PopupHeader, Picker, XTextarea,
-  XDialog, XButton, AlertPlugin, Datetime, Checklist } from 'vux'
+  XDialog, XButton, AlertPlugin, Datetime, Checklist, XSwitch } from 'vux'
 
 import BaiduMap from 'vue-baidu-map'
 
@@ -38,6 +38,7 @@ Vue.component('x-dialog', XDialog)
 Vue.component('x-button', XButton)
 Vue.component('datetime', Datetime)
 Vue.component('checklist', Checklist)
+Vue.component('x-switch', XSwitch)
 
 Vue.prototype.$axios = ajax
 Vue.config.productionTip = false

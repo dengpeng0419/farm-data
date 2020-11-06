@@ -174,7 +174,8 @@ export default {
   min-height: 100vh;
   position: relative;
   .add-farmer {
-    position: absolute;
+    z-index: 99999;
+    position: fixed;
     bottom: 100px;
     right: 20px;
     width: 40px;
