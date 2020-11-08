@@ -249,7 +249,7 @@ export default {
           flex-direction: column;
           justify-content: center;
           align-items: center;
-          margin-right: 20px;
+          margin-right: 10px;
           .icon {
             width: 30px;
             height: 30px;

@@ -17,7 +17,9 @@ const ajax = function(opts) {
     // withCredentials: true,
     headers: {
       'X-Requested-With': 'XMLHttpRequest',
-      'Content-Type': 'application/json;charset=UTF-8'
+      'Content-Type': 'application/json;charset=UTF-8',
+      'token': sessionStorage.getItem('_t'),
+      'divorce': 'h5'
     },
     transformResponse: [function(data) {
       return data;
@@ -72,14 +74,16 @@ const ajax = function(opts) {
       let json = res.data || {};
 
       if (CODE_ENV === 'development') {
-        console.log(JSON.stringify(json, null, 2));
+        console.log('resp:', JSON.stringify(json, null, 2), json);
       }
 
       if (typeof json === 'string') {
         json = JSON.parse(json) || {}
       }
 
-      if (json.code === 0) {
+      if ((opts.url.indexOf('logout') > -1 && res.status === 200)) {
+        resole({});
+      } else if (json.code === 0) {
         // convert处理
         resole(json.data);
       }

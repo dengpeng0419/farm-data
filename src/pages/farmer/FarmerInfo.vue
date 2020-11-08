@@ -230,8 +230,8 @@ export default {
         value: '9'
       }]],
       personList: [[{
-        name: '赵小刚',
-        value:  '1'
+        name: sessionStorage.getItem('userName'),
+        value:  sessionStorage.getItem('userId')
       }]],
       plant_quarter: [[{
         name: '第一季',
@@ -386,6 +386,7 @@ export default {
         url: this.urls().checkPhone+'?phoneNum='+phone+'&tableNum=1'
       }).then(json => {
         console.log(json)
+        this.showAlert('当前存在'+json+'个电话号码')
         // this.uploadForm[this.chooseFile].fileUrl = json
       }).catch(err => {
         this.pageShow = true
@@ -623,7 +624,7 @@ export default {
     },
     showAlert(msg) {
       this.$vux.alert.show({
-        title: '提示',
+        // title: '提示',
         content: msg,
         onShow () {
           console.log('Plugin: I\'m showing')
@@ -679,7 +680,11 @@ export default {
         this.uploadForm[index].plantingType = [item.plantingType + '']
         this.uploadForm[index].averageRent = item.averageRent
         this.uploadForm[index].plantingSubType = [item.plantingSubType + '']
-        this.uploadForm[index].fileList = item.operatePictureUrl
+        if(item.operatePictureUrl.indexOf(',') > -1) {
+          this.uploadForm[index].fileList = item.operatePictureUrl.split(',')[0]
+        } else {
+          this.uploadForm[index].fileList = item.operatePictureUrl
+        }
       })
       const addressList = data.addressList || []
       addressList.map(item => {

@@ -235,8 +235,8 @@ export default {
         value: '4'
       }]],
       personList: [[{
-        name: '赵小刚',
-        value:  '1'
+        name: sessionStorage.getItem('userName'),
+        value: sessionStorage.getItem('userId')
       }]],
       customer_source: [[{
         name: '电话营销',
@@ -415,9 +415,10 @@ export default {
     },
     checkconnectPhone(connectPhone) {
       this.$axios({
-        url: this.urls().checkconnectPhone+'?connectPhoneNum='+connectPhone+'&tableNum=1'
+        url: this.urls().checkconnectPhone+'?phoneNum='+connectPhone+'&tableNum=1'
       }).then(json => {
         console.log(json)
+        this.showAlert('当前存在'+json+'个电话号码')
       }).catch(err => {
         this.pageShow = true
       })
@@ -610,7 +611,7 @@ export default {
     },
     showAlert(msg) {
       this.$vux.alert.show({
-        title: '提示',
+        // title: '提示',
         content: msg,
         onShow () {
           console.log('Plugin: I\'m showing')
@@ -647,7 +648,11 @@ export default {
       this.form.source = [data.source + '']
       this.form.maintainMan = [data.maintainMan + '']
       this.form.remark = data.remark
-      this.form.fileList = data.servicePictureUrl
+      if(data.servicePictureUrl.indexOf(',')>-1) {
+        this.form.fileList = data.servicePictureUrl.split(',')[0]
+      } else {
+        this.form.fileList = data.servicePictureUrl
+      }
       const addressList = data.addressList || []
       addressList.map(item => {
         if (item.addressType === 3) { // 经营地址

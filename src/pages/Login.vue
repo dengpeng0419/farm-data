@@ -13,8 +13,7 @@
         <div class="passport"></div>
       </div>
     </div>
-        <x-switch v-model="value"></x-switch>
-
+    <!-- <x-switch v-model="value"></x-switch> -->
     <div class="login-button" @click="login">登录</div>
   </div>
 </template>
@@ -39,15 +38,17 @@ export default {
   },
   methods: {
     login() {
+      console.log(111)
       this.inputType = 'password'
       const name = this.name
       const passport = this.passport
+      const remember = false
       if (!name) {
-        this.$toast('用户名不能为空')
+        // this.$toast('用户名不能为空')
         return
       }
       if (!passport) {
-        this.$toast('密码不能为空')
+        // this.$toast('密码不能为空')
         return
       }
       // const publicKey = 'MFwwDQYJKoZIhvcNAQEBBQADSwAwSAJBALldL4hqBNN6kgQ1HPk5qeLmKYbyxDA6C9zuOI8vi0SvrltyMjowYHoEPPHtGKLE9jgtD3E//ErfKDf8CwJXybcCAwEAAQ=='
@@ -55,18 +56,17 @@ export default {
       // jsencrypt.setPublicKey(publicKey)
       // const secret = jsencrypt.encrypt(passport)
       this.$axios({
-        url: '/app/service/login',
-        data: {
-          userName: name,
-          password: secret
-        }
+        url: 'http://thegisguy.cn:8085/login?password=' + passport + '&rememberMe=' + remember + '&username=' + name,
       }).then(res => {
+        console.log(res)
         const data = res.data || {};
-        localStorage.setItem('name', data.userName || '')
-        sessionStorage.setItem('_t', data.token)
+        // localStorage.setItem('name', res.userName || '')
+        sessionStorage.setItem('_t', res.token)
         sessionStorage.setItem('login', '1')
+        res.user && sessionStorage.setItem('userName', res.user.userName)
+        res.user && sessionStorage.setItem('userId', res.user.userId)
         this.$router.push({
-          name: 'home'
+          name: 'Home'
         })
       }).catch(error => {
         console.log(error)
@@ -86,7 +86,7 @@ export default {
     .form-frame {
       width: 90vw;
       // padding-left: 10vw;
-      border: 1Px solid #666;
+      border: 1Px solid #999;
       padding-bottom: 15px;
       padding-top: 5px;
       border-radius: 10px;
@@ -105,12 +105,12 @@ export default {
       position: relative; 
       display: flex;
       align-items: center;
-      margin-top: 20px;
+      margin-top: 10px;
     }
     .gap {
       width: 100%;
       height: 10px;
-      border-bottom: 1Px solid #666;
+      border-bottom: 1Px solid #999;
     }
 
     .userName {
@@ -137,14 +137,14 @@ export default {
     
     .login-button {
       margin-top: 40px;
-      font-size: 26px;
+      font-size: 24px;
       display: flex;
       color: #fff;
       background-color: #5895f7;
       justify-content: center;
       width: 90vw;
-      height: 60px;
-      line-height: 60px;
+      height: 50px;
+      line-height: 50px;
       border-radius: 10px;
     }
 
