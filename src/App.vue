@@ -6,7 +6,16 @@
 
 <script>
 export default {
-  name: 'app'
+  name: 'app',
+  watch: {
+    $route(to, from) {
+      if (!sessionStorage.getItem('_t') && to.name !== 'Login') {
+        this.$router.replace({
+          name: 'Login'
+        })
+      }
+    }
+  }
 }
 </script>
 

@@ -289,7 +289,6 @@ export default {
     }
   },
   mounted() {
-    console.log(plantingType)
     if (this.$route.name === 'FarmerInfo') {
       this.customerId = this.$route.query.id
       this.getPageData()
@@ -298,6 +297,7 @@ export default {
   methods: {
     showForm() {
       console.log(this.uploadForm[0].plantingSubType)
+      // this.uploadForm[this.operateLine].plantingSubType = [['1','2']]
     },
     chooseAddress() {
       this.showAddress = false
@@ -667,7 +667,7 @@ export default {
         this.uploadForm[index].operateNum = item.operateNum
         this.uploadForm[index].plantingType = [item.plantingType + '']
         this.uploadForm[index].averageRent = item.averageRent
-        this.uploadForm[index].plantingSubType = [item.plantingSubType + '']
+        this.uploadForm[index].plantingSubType = ['a'+item.plantingSubType + '',item.plantingThirdType+'']
         if(item.operatePictureUrl.indexOf(',') > -1) {
           this.uploadForm[index].fileList = item.operatePictureUrl.split(',')[0]
         } else {
