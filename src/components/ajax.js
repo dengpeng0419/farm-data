@@ -18,7 +18,7 @@ const ajax = function(opts) {
     headers: {
       'X-Requested-With': 'XMLHttpRequest',
       'Content-Type': 'application/json;charset=UTF-8',
-      'token': sessionStorage.getItem('_t'),
+      'token': sessionStorage.getItem('_t') || '123',
       'divorce': 'h5'
     },
     transformResponse: [function(data) {

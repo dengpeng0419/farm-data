@@ -2,7 +2,7 @@
   <div class="page-point-info">
     <group>
       <div class="inline">
-        <x-input id="style1" placeholder="请输入客户手机号" v-model="form.connectPhone"></x-input>
+        <x-input id="style1" placeholder="请输入客户手机号" v-model="form.connectPhone" is-type="china-mobile"></x-input>
         <div class="check-repeat" @click="checkRepeat(form.connectPhone)">查重</div>
       </div>
     </group>

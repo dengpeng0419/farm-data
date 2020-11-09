@@ -2,7 +2,7 @@
   <div class="page-farmer-info">
     <group>
       <div class="inline">
-        <x-input id="style1" placeholder="请输入客户手机号" v-model="form.phone"></x-input>
+        <x-input id="style1" placeholder="请输入客户手机号" v-model="form.phone" is-type="china-mobile"></x-input>
         <div class="check-repeat" @click="checkRepeat(form.phone)">查重</div>
       </div>
     </group>
@@ -42,7 +42,7 @@
         <popup-picker :id="`style03${index}`" show-name @on-show="uploadForm[index].style3='color:#333'" class="required" :title='`<span style="${uploadForm[index].style3}">种植类型</span>`' 
           placeholder="点击选择" v-model="uploadForm[index].plantingType" :data=planting_type></popup-picker>
         <x-input title="平均单亩租金" placeholder="点击填写" text-align="right" v-model="uploadForm[index].averageRent" required></x-input>
-        <popup-picker title="种植种类" placeholder="点击选择" show-name v-model="uploadForm[index].plantingSubType" :data=planting_sub_type></popup-picker>
+        <popup-picker title="种植种类" placeholder="点击选择" @on-change="showForm" :columns="2" show-name v-model="uploadForm[index].plantingSubType" :data=planting_sub_type></popup-picker>
         <div class="upload-title">经营照片</div>
         <div class="upload-line">
           <file-upload v-show="!uploadForm[index].fileList" accept="image/*" ref="upload" @click.native="clickUpload(index)" @input-file="inputFile" @input-filter="inputFilter">
@@ -136,7 +136,8 @@ import Compressimg from '@/components/Compressimg'
 import Upload from '@/components/upload'
 import axios from 'axios'
 import Vue from 'vue'
-import  VueJsonp from 'vue-jsonp'
+import VueJsonp from 'vue-jsonp'
+import plantingType from '../../assets/data/planting_type.json'
 // // import { BMPGL } from "@/components/map.js";
 
 Vue.use(VueJsonp)
@@ -250,22 +251,7 @@ export default {
         name: '经济作物',
         value: '2'
       }]],
-      planting_sub_type: [[{
-        name: '禾谷类作物',
-        value: '1'
-      }, {
-        name: '豆类作物',
-        value: '2'
-      }, {
-        name: '薯芋类作物',
-        value: '3'
-      }, {
-        name: '纤维作物',
-        value: '4'
-      }, {
-        name: '油料作物',
-        value: '5'
-      }]],
+      planting_sub_type: plantingType,
       addressData: ChinaAddressV4Data,
       moreYear: false,
       moreYearOne: [],
@@ -303,6 +289,7 @@ export default {
     }
   },
   mounted() {
+    console.log(plantingType)
     if (this.$route.name === 'FarmerInfo') {
       this.customerId = this.$route.query.id
       this.getPageData()
@@ -310,7 +297,7 @@ export default {
   },
   methods: {
     showForm() {
-      console.log(this.form)
+      console.log(this.uploadForm[0].plantingSubType)
     },
     chooseAddress() {
       this.showAddress = false
@@ -488,6 +475,7 @@ export default {
         obj.plantingType = item.plantingType[0]
         obj.averageRent = item.averageRent
         obj.plantingSubType = item.plantingSubType[0]
+        obj.plantingThirdType = item.plantingSubType[1]
         obj.operatePictureUrl = item.fileUrl
         operateInfoDetails.push(obj)
       })
