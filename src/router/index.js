@@ -56,4 +56,12 @@ const router = new Router({
   ]
 })
 
+router.beforeEach((to, from, next) => {
+  // setTimeout(() => {
+    document.body.scrollTop = 0;
+    document.documentElement.scrollTop = 0;
+  // }, 200)
+  next()
+})
+
 export default router

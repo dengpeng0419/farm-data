@@ -1,249 +1,249 @@
 [{
   "name": "禾谷类作物",
-  "value": "a1",
+  "value": "1",
   "parent": 0
 }, {
   "name": "豆类作物",
-  "value": "a2",
+  "value": "2",
   "parent": 0
 }, {
   "name": "薯芋类作物",
-  "value": "a3",
+  "value": "3",
   "parent": 0
 }, {
   "name": "纤维作物",
-  "value": "a4",
+  "value": "4",
   "parent": 0
 }, {
   "name": "油料作物",
-  "value": "a5",
+  "value": "5",
   "parent": 0
 }, {
   "name": "糖料作物",
-  "value": "a6",
+  "value": "6",
   "parent": 0
 }, {
   "name": "其他作物",
-  "value": "a7",
+  "value": "7",
   "parent": 0
 }, {
   "name": "调料作物",
-  "value": "a8",
+  "value": "8",
   "parent": 0
 }, {
   "name": "果蔬类",
-  "value": "a9",
+  "value": "9",
   "parent": 0
 }, {
   "name": "水稻",
-  "value": "1",
-  "parent": "a1"
+  "value": "11",
+  "parent": "1"
 }, {
   "name": "小麦",
-  "value": "2",
-  "parent": "a1"
+  "value": "12",
+  "parent": "1"
 }, {
   "name": "大麦",
-  "value": "3",
-  "parent": "a1"
+  "value": "13",
+  "parent": "1"
 }, {
   "name": "燕麦",
-  "value": "4",
-  "parent": "a1"
+  "value": "14",
+  "parent": "1"
 }, {
   "name": "黑麦",
-  "value": "5",
-  "parent": "a1"
+  "value": "15",
+  "parent": "1"
 }, {
   "name": "玉米",
-  "value": "6",
-  "parent": "a1"
+  "value": "16",
+  "parent": "1"
 }, {
   "name": "高粱",
-  "value": "7",
-  "parent": "a1"
+  "value": "17",
+  "parent": "1"
 }, {
   "name": "其它",
-  "value": "8",
-  "parent": "a1"
+  "value": "18",
+  "parent": "1"
 }, {
   "name": "大豆",
-  "value": "1",
-  "parent": "a2"
+  "value": "21",
+  "parent": "2"
 }, {
   "name": "蚕豆",
-  "value": "2",
-  "parent": "a2"
+  "value": "22",
+  "parent": "2"
 }, {
   "name": "豌豆",
-  "value": "3",
-  "parent": "a2"
+  "value": "23",
+  "parent": "2"
 }, {
   "name": "绿豆",
-  "value": "4",
-  "parent": "a2"
+  "value": "24",
+  "parent": "2"
 }, {
   "name": "菜豆",
-  "value": "5",
-  "parent": "a2"
+  "value": "25",
+  "parent": "2"
 }, {
   "name": "小豆",
-  "value": "6",
-  "parent": "a2"
+  "value": "26",
+  "parent": "2"
 }, {
   "name": "其它",
-  "value": "7",
-  "parent": "a2"
+  "value": "27",
+  "parent": "2"
 }, {
   "name": "甘薯",
-  "value": "1",
-  "parent": "a3"
+  "value": "31",
+  "parent": "3"
 }, {
   "name": "马铃薯",
-  "value": "2",
-  "parent": "a3"
+  "value": "32",
+  "parent": "3"
 }, {
   "name": "豆薯",
-  "value": "3",
-  "parent": "a3"
+  "value": "33",
+  "parent": "3"
 }, {
   "name": "木薯",
-  "value": "4",
-  "parent": "a3"
+  "value": "34",
+  "parent": "3"
 }, {
   "name": "山药",
-  "value": "5",
-  "parent": "a3"
+  "value": "35",
+  "parent": "3"
 }, {
   "name": "其它",
-  "value": "6",
-  "parent": "a3"
+  "value": "36",
+  "parent": "3"
 }, {
   "name": "棉花",
-  "value": "1",
-  "parent": "a4"
+  "value": "41",
+  "parent": "4"
 }, {
   "name": "大麻",
-  "value": "2",
-  "parent": "a4"
+  "value": "42",
+  "parent": "4"
 }, {
   "name": "其它",
-  "value": "3",
-  "parent": "a4"
+  "value": "43",
+  "parent": "4"
 }, {
   "name": "油菜",
-  "value": "1",
-  "parent": "a5"
+  "value": "51",
+  "parent": "5"
 }, {
   "name": "花生",
-  "value": "2",
-  "parent": "a5"
+  "value": "52",
+  "parent": "5"
 }, {
   "name": "芝麻",
-  "value": "3",
-  "parent": "a5"
+  "value": "53",
+  "parent": "5"
 }, {
   "name": "向日葵",
-  "value": "4",
-  "parent": "a5"
+  "value": "54",
+  "parent": "5"
 }, {
   "name": "其它",
-  "value": "5",
-  "parent": "a5"
+  "value": "55",
+  "parent": "5"
 }, {
   "name": "甘蔗",
-  "value": "1",
-  "parent": "a6"
+  "value": "61",
+  "parent": "6"
 }, {
   "name": "甜菜",
-  "value": "2",
-  "parent": "a6"
+  "value": "62",
+  "parent": "6"
 }, {
   "name": "其他",
-  "value": "3",
-  "parent": "a6"
+  "value": "63",
+  "parent": "6"
 }, {
   "name": "烟草",
-  "value": "1",
-  "parent": "a7"
+  "value": "71",
+  "parent": "7"
 }, {
   "name": "茶叶",
-  "value": "2",
-  "parent": "a7"
+  "value": "72",
+  "parent": "7"
 }, {
   "name": "薄荷",
-  "value": "3",
-  "parent": "a7"
+  "value": "73",
+  "parent": "7"
 }, {
   "name": "咖啡",
-  "value": "4",
-  "parent": "a7"
+  "value": "74",
+  "parent": "7"
 }, {
   "name": "啤酒花",
-  "value": "5",
-  "parent": "a7"
+  "value": "75",
+  "parent": "7"
 }, {
   "name": "其它",
-  "value": "6",
-  "parent": "a7"
+  "value": "76",
+  "parent": "7"
 }, {
   "name": "姜",
-  "value": "1",
-  "parent": "a8"
+  "value": "81",
+  "parent": "8"
 }, {
   "name": "葱",
-  "value": "2",
-  "parent": "a8"
+  "value": "82",
+  "parent": "8"
 }, {
   "name": "蒜",
-  "value": "3",
-  "parent": "a8"
+  "value": "83",
+  "parent": "8"
 }, {
   "name": "辣椒",
-  "value": "4",
-  "parent": "a8"
+  "value": "84",
+  "parent": "8"
 }, {
   "name": "花椒",
-  "value": "5",
-  "parent": "a8"
+  "value": "85",
+  "parent": "8"
 }, {
   "name": "其它",
-  "value": "6",
-  "parent": "a8"
+  "value": "86",
+  "parent": "8"
 }, {
   "name": "大白菜",
-  "value": "1",
-  "parent": "a9"
+  "value": "91",
+  "parent": "9"
 }, {
   "name": "小白菜",
-  "value": "2",
-  "parent": "a9"
+  "value": "92",
+  "parent": "9"
 }, {
   "name": "甘蓝",
-  "value": "3",
-  "parent": "a9"
+  "value": "93",
+  "parent": "9"
 }, {
   "name": "苤蓝",
-  "value": "4",
-  "parent": "a9"
+  "value": "94",
+  "parent": "9"
 }, {
   "name": "花椰菜",
-  "value": "5",
-  "parent": "a9"
+  "value": "95",
+  "parent": "9"
 }, {
   "name": "青花菜",
-  "value": "6",
-  "parent": "a9"
+  "value": "96",
+  "parent": "9"
 }, {
   "name": "芥菜",
-  "value": "7",
-  "parent": "a9"
+  "value": "97",
+  "parent": "9"
 }, {
   "name": "萝卜",
-  "value": "8",
-  "parent": "a9"
+  "value": "98",
+  "parent": "9"
 }, {
   "name": "其它",
-  "value": "9",
-  "parent": "a9"
+  "value": "99",
+  "parent": "9"
 }]

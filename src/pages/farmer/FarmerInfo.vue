@@ -25,7 +25,7 @@
     </group>
     <div style="position:relative">
       <div class="add-group" @click="addHistory">添加经营历史</div>
-      <group title="经营历史" v-for="(item,index) in uploadForm" :key=index>
+      <group title="经营历史" v-for="(item,index) in uploadForm" :key=index :id="`history${index}`">
         <div class="inline">
           <div class="div-required" :id="`style01${index}`" :style="`${uploadForm[index].style1}`">时间</div>
           <checker class="checker-line" v-model="uploadForm[index].operateYear" @on-change="getOperateYear" default-item-class="checker" selected-item-class="checker-selected">
@@ -104,8 +104,8 @@
           :show-bottom-border="false"
           @on-click-left="showAddress = false"
           @on-click-right="chooseAddress"></popup-header>
-        <div style="position:fixed; top:44px; left:0; width:100%; height:44px; font-size: 18px; line-height:44px; padding-left:15px; z-index:999; background:#ddd">
-          {{this.province}}{{this.city}}{{this.district}}{{this.town}}{{this.village}}
+        <div style="position:fixed; top:44px; left:0; width:100%; height:44px; font-size: 14px; line-height:44px; padding-left:15px; z-index:999; background:#ddd">
+          {{this.province}} {{this.city}} {{this.district}} {{this.town}} {{this.village}}
         </div>
         <checklist style="margin-top:88px" label-position="left" :options="addressOptionList" v-model="addressValue" :max="1" @on-change="addressOptionChange"></checklist>
       </popup>
@@ -296,7 +296,7 @@ export default {
   },
   methods: {
     showForm() {
-      console.log(this.uploadForm[0].plantingSubType)
+      // console.log(this.uploadForm[0].plantingSubType)
       // this.uploadForm[this.operateLine].plantingSubType = [['1','2']]
     },
     chooseAddress() {
@@ -307,7 +307,7 @@ export default {
       this.provinceCode && (this.form.address = [this.provinceCode, this.cityCode, this.districtCode])
     },
     addressOptionChange(value, label) {
-      console.log(value, label)
+      // console.log(value, label)
       if (!value[0]) {
         return
       }
@@ -342,7 +342,7 @@ export default {
         url: 'http://thegisguy.cn:8085/util/area?parentAreaId=' + this.addressId
       }).then(json => {
         const data = json || []
-        if (data.length === 0) {
+        if (data.length === 0 && param != 'init') {
           this.showAddress = false
           return
         }
@@ -372,7 +372,7 @@ export default {
       this.$axios({
         url: this.urls().checkPhone+'?phoneNum='+phone+'&tableNum=1'
       }).then(json => {
-        console.log(json)
+        // console.log(json)
         this.showAlert('当前存在'+json+'个电话号码')
         // this.uploadForm[this.chooseFile].fileUrl = json
       }).catch(err => {
@@ -427,6 +427,10 @@ export default {
         style2: '',
         style3: ''
       })
+      const length = this.uploadForm.length
+      this.$nextTick(() => {
+        document.getElementById(`history${length-1}`) && document.getElementById(`history${length-1}`).scrollIntoView()
+      })
     },
     deleteLine(index) {
       this.uploadForm.splice(index, 1)
@@ -475,7 +479,7 @@ export default {
         obj.plantingType = item.plantingType[0]
         obj.averageRent = item.averageRent
         obj.plantingSubType = item.plantingSubType[0]
-        obj.plantingThirdType = item.plantingSubType[1]
+        obj.plantingThirdType = item.plantingSubType[1].substr(1,1)
         obj.operatePictureUrl = item.fileUrl
         operateInfoDetails.push(obj)
       })
@@ -563,7 +567,7 @@ export default {
     },
     // 压缩文件
     compressFile(files) {
-      console.log(files)
+      // console.log(files)
       Compressimg.compress(files, {
         size: 512000,
         quality: 80,
@@ -601,7 +605,7 @@ export default {
     getOperateYear(value) {
       this.uploadForm[this.operateLine].style1 = 'color: #333'
       value === '0' && (this.moreYear = true)
-      console.log(this.uploadForm)
+      // console.log(this.uploadForm)
     },
     moreYearChange(index) {
       this.operateLine = index
@@ -633,7 +637,6 @@ export default {
       })
     },
     handleInitPage(data) {
-      console.log(data)
       this.form.sex = [data.sex + '']
       this.form.phone = data.phone
       this.form.customerName = data.customerName
@@ -667,8 +670,8 @@ export default {
         this.uploadForm[index].operateNum = item.operateNum
         this.uploadForm[index].plantingType = [item.plantingType + '']
         this.uploadForm[index].averageRent = item.averageRent
-        this.uploadForm[index].plantingSubType = ['a'+item.plantingSubType + '',item.plantingThirdType+'']
-        if(item.operatePictureUrl.indexOf(',') > -1) {
+        this.uploadForm[index].plantingSubType = [item.plantingSubType + '', item.plantingSubType + '' + item.plantingThirdType+'']
+        if(item.operatePictureUrl && item.operatePictureUrl.indexOf(',') > -1) {
           this.uploadForm[index].fileList = item.operatePictureUrl.split(',')[0]
         } else {
           this.uploadForm[index].fileList = item.operatePictureUrl

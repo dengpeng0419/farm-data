@@ -648,7 +648,7 @@ export default {
       this.form.source = [data.source + '']
       this.form.maintainMan = [data.maintainMan + '']
       this.form.remark = data.remark
-      if(data.servicePictureUrl.indexOf(',')>-1) {
+      if(data.servicePictureUrl && data.servicePictureUrl.indexOf(',')>-1) {
         this.form.fileList = data.servicePictureUrl.split(',')[0]
       } else {
         this.form.fileList = data.servicePictureUrl

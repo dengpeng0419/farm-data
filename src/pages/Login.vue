@@ -3,7 +3,15 @@
   <div class="login">
     <div class="login-icon"></div>
     <div class="form-frame">
-      <div class="line">
+      <group gutter="0">
+        <x-input placeholder="请输入用户名" v-model="name">
+          <div slot="label" class="userName"></div>
+        </x-input>
+        <x-input placeholder="请输入密码" v-model="passport" type="password">
+          <div slot="label" class="passport"></div>
+        </x-input>
+      </group>
+      <!-- <div class="line">
         <input v-model="name" placeholder="请输入用户名"/>
         <div class="userName"></div>
       </div>
@@ -11,7 +19,7 @@
       <div class="line">
         <input :type="inputType" v-model="passport" placeholder="请输入密码"/>
         <div class="passport"></div>
-      </div>
+      </div> -->
     </div>
     <!-- <x-switch v-model="value"></x-switch> -->
     <div class="login-button" @click="login">登录</div>
@@ -87,14 +95,14 @@ export default {
       width: 90vw;
       // padding-left: 10vw;
       border: 1Px solid #999;
-      padding-bottom: 15px;
-      padding-top: 5px;
+      // padding-bottom: 15px;
+      // padding-top: 5px;
       border-radius: 10px;
       position: relative;
+      overflow: hidden;
     }
     .login-icon {
       // margin-top: 18vh;
-      margin-bottom: 40px;
       width: 50px;
       height: 200px;
       // background-image: url(../assets/img/icon_login.png);
@@ -114,22 +122,18 @@ export default {
     }
 
     .userName {
-      position: absolute;
-      bottom: -2px;
-      left: 20px;
       width: 32px;
       height: 32px;
+      margin-top: 5px;
       background-image: url(../assets/img/icon_person.png);
       background-size: 100% 100%;
       background-repeat: no-repeat;
     }
 
     .passport {
-      position: absolute;
-      bottom: -2px;
-      left: 20px;
       width: 32px;
       height: 32px;
+      margin-top: 5px;
       background-image: url(../assets/img/icon_passport.png);
       background-size: 100% 100%;
       background-repeat: no-repeat;
@@ -154,12 +158,12 @@ export default {
       outline: none;  
       border:none;
       // border-bottom: 1Px solid #666;
-      // height: 20px;
+      height: 100%;
       // width: 80vw;
       font-size: 24px;
       // margin-top: 30px;
       // color: #accbee;
-      padding-left: 70px;
+      padding-left: 20px;
       box-sizing: border-box;
     }
     
