@@ -86,6 +86,9 @@ const ajax = function(opts) {
       } else if (json.code === 0) {
         // convert处理
         resole(json.data);
+      } else if (json.code == 1) {
+        this.$router.replace({name: 'Login'})
+        resole(json.data);
       }
       // 跳转实名
       else if (json.code === -4) {

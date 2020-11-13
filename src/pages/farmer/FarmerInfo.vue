@@ -8,14 +8,18 @@
     </group>
     <group title="基础信息">
       <x-input id="style2" @on-focus="style2='color:#333'" class="s-input-required" :title='`<span style="${style2}">客户姓名</span>`' placeholder="点击填写" text-align="right" v-model="form.customerName" required></x-input>
-      <popup-picker  title="客户性别" placeholder="点击选择" show-name v-model="form.sex" :data=sys_user_sex></popup-picker>
-      <div class="inline border-top">
-        <cell id="style3" @on-show="style3='color:#333'" @click.native="showAddress=true" title='经营地区' style="flex:1; margin-left: -15px" class="cell-required" 
-          :value="`${province}${city}${district}${town}${village}`" is-link></cell>
-        <div class="map-button" @click="openMapView">定位</div>
+      <popup-picker title="客户性别" placeholder="点击选择" show-name v-model="form.sex" :data=sys_user_sex></popup-picker>
+      <div v-for="(item,index) in addressForm" :key=index>
+        <div class="inline border-top">
+          <cell :id="`style11${index}`" @on-show="addressForm[index].style1='color:#333'" @click.native="openAddress(index)" title='经营地区' style="flex:1;margin-left: -15px" :style="addressForm[index].style1" 
+            class="cell-required" :value="addressForm[index].address" is-link></cell>
+          <div class="map-button" @click="openMapView(index)">定位</div>
+        </div>
+        <x-input :id="`style12${index}`" @on-focus="addressForm[index].style2='color:#333'" class="input-required" :title='`<span style="${addressForm[index].style2}">详细经营地址</span>`' placeholder="点击填写" 
+          text-align="right" v-model="addressForm[index].detail" required></x-input>
+        <div class="add-address" @click="addAddress" v-if="index===0">添加经营地区</div>
+        <div class="delete-address" @click="deleteAddress(index)" v-if="index>0">删除经营地区</div>
       </div>
-      <x-input id="style4" @on-focus="style4='color:#333'" class="input-required" :title='`<span style="${style4}">详细经营地址</span>`' placeholder="点击填写" 
-        text-align="right" v-model="form.detail" required></x-input>
       <popup-picker id="style5" @on-show="style5='color:#333'" class="required" show-name
         :title='`<span style="${style5}">客户意向</span>`' placeholder="点击选择" v-model="form.customerState" :data=customer_intention></popup-picker>
       <popup-picker id="style6" @on-show="style6='color:#333'" class="required" show-name
@@ -95,14 +99,14 @@
       </x-dialog>
     </div>
     <div v-transfer-dom>
-      <popup v-model="showAddress" height="100%" position="bottom" @popup-header-height=0 @on-show="getProvince('init')">
+      <popup v-model="showAddress" height="100%" position="bottom" @popup-header-height=0 @on-show="getProvince('init')" @on-hide="closeAddrss">
         <popup-header
           style="position:fixed; top:0; left:0; width:100%; z-index:999"
           left-text="取消"
           right-text="确定"
-          title="选择位置"
+          title="选择地址"
           :show-bottom-border="false"
-          @on-click-left="showAddress = false"
+          @on-click-left="closeAddrss"
           @on-click-right="chooseAddress"></popup-header>
         <div style="position:fixed; top:44px; left:0; width:100%; height:44px; font-size: 14px; line-height:44px; padding-left:15px; z-index:999; background:#ddd">
           {{this.province}} {{this.city}} {{this.district}} {{this.town}} {{this.village}}
@@ -164,6 +168,23 @@ export default {
         operateDuration: '',
         remark: ''
       },
+      openAddressLine: 0,
+      addressForm: [{
+        address: '点击选择',
+        addressType : 2,
+        province: '',
+        city: '',
+        district: '',
+        town: '',
+        village: '',
+        latitude: 0,
+        longitude: 0,
+        remark: '',
+        addressLevel: 0,
+        detail: '',
+        style1: '',
+        style2: ''
+      }],
       uploadForm: [{
         operateYear: '',
         operateQuarter: [],
@@ -262,8 +283,8 @@ export default {
       preImg: '',
       style1: '',
       style2: '',
-      style3: '',
-      style4: '',
+      style3: 'default',
+      style4: 'default',
       style5: '',
       style6: '',
       style7: '',
@@ -299,8 +320,35 @@ export default {
       // console.log(this.uploadForm[0].plantingSubType)
       // this.uploadForm[this.operateLine].plantingSubType = [['1','2']]
     },
+    openAddress(index) {
+      this.openAddressLine = index
+      this.showAddress = true
+    },
+    closeAddrss() {
+      this.showAddress = false
+      this.addressId = 0
+      this.address = ''
+      this.district = ''
+      this.city = ''
+      this.province = '点击选择'
+      this.town = ''
+      this.village = ''
+    },
     chooseAddress() {
       this.showAddress = false
+      this.addressForm[this.openAddressLine].address = this.province + this.city + this.district + this.town + this.village
+      this.addressForm[this.openAddressLine].province = this.provinceCode
+      this.addressForm[this.openAddressLine].city = this.cityCode
+      this.addressForm[this.openAddressLine].district = this.districtCode
+      this.addressForm[this.openAddressLine].town = this.townCode
+      this.addressForm[this.openAddressLine].village = this.villageCode
+
+      this.province && (this.addressLevel = 1)
+      this.city && (this.addressLevel = 2)
+      this.district && (this.addressLevel = 3)
+      this.town && (this.addressLevel = 4)
+      this.village && (this.addressLevel = 5)
+      this.addressForm[this.openAddressLine].addressLevel = this.addressLevel
     },
     chooseMapAddress() {
       this.showMap = false
@@ -311,7 +359,6 @@ export default {
       if (!value[0]) {
         return
       }
-      this.addressId = value[0]
       this.addressId = value[0]
       if (this.addressType === 1) {
         this.province = label[0]
@@ -343,7 +390,7 @@ export default {
       }).then(json => {
         const data = json || []
         if (data.length === 0 && param != 'init') {
-          this.showAddress = false
+          // this.showAddress = false
           return
         }
         this.addressType ++
@@ -379,7 +426,8 @@ export default {
         this.pageShow = true
       })
     },
-    openMapView() {
+    openMapView(index) {
+      this.openAddressLine = index
       let geolocation = new BMap.Geolocation()
       geolocation.getCurrentPosition((res) => {
         this.location = res.point
@@ -393,7 +441,6 @@ export default {
         ak: 'ZwTVu16RLXjhW7FHDjYt5HfMnR1dhFpR',
         location: this.lat + ',' + this.lng
       }).then((res)=>{
-      　console.log(res)
         const data = res.result || {}
         this.address = data.formatted_address
         this.province = data.addressComponent.province
@@ -413,6 +460,27 @@ export default {
         this.cityCode = adcode/100
         this.districtCode = adcode
       })  
+    },
+    addAddress() {
+      this.addressForm.push({
+        address: '点击选择',
+        addressType : 2,
+        province: '',
+        city: '',
+        district: '',
+        town: '',
+        village: '',
+        latitude: 0,
+        longitude: 0,
+        remark: '',
+        addressLevel: 0,
+        detail: '',
+        style1: '',
+        style2: ''
+      })
+    },
+    deleteAddress(index) {
+      this.addressForm.splice(index, 1)
     },
     addHistory() {
       this.uploadForm.push({
@@ -452,16 +520,30 @@ export default {
           this[`style${i}`] = 'color:red;'
         }
       }
+      for (let k = 0; k < this.addressForm.length; k++) {
+        if (this.addressForm[k].address == '点击选择' || this.addressForm[k].address.length === 0) {
+          !error && document.getElementById(`style11${k}`).scrollIntoView()
+          error = true
+          this.addressForm[k].style1 = 'color:red !important;'
+        } 
+        if (this.addressForm[k].detail == undefined || this.addressForm[k].detail.length === 0) {
+          !error && document.getElementById(`style12${k}`).scrollIntoView()
+          error = true
+          this.addressForm[k].style2 = 'color: red'
+        }
+      }
       for (let j = 0; j < this.uploadForm.length; j++) {
         if (this.uploadForm[j].operateYear == undefined || this.uploadForm[j].operateYear.length === 0) {
           !error && document.getElementById(`style01${j}`).scrollIntoView()
           error = true
           this.uploadForm[j].style1 = 'color: red'
-        } else if (this.uploadForm[j].operateNum == undefined || this.uploadForm[j].operateNum.length === 0) {
+        }
+        if (this.uploadForm[j].operateNum == undefined || this.uploadForm[j].operateNum.length === 0) {
           !error && document.getElementById(`style02${j}`).scrollIntoView()
           error = true
           this.uploadForm[j].style2 = 'color: red'
-        } else if (this.uploadForm[j].plantingType == undefined || this.uploadForm[j].plantingType.length === 0) {
+        } 
+        if (this.uploadForm[j].plantingType == undefined || this.uploadForm[j].plantingType.length === 0) {
           !error && document.getElementById(`style03${j}`).scrollIntoView()
           error = true
           this.uploadForm[j].style3 = 'color: red'
@@ -485,19 +567,7 @@ export default {
       })
       const data = {
         customerId: this.customerId || undefined,
-        addressList: [{
-          addressType : 2,
-          city: this.cityCode,
-          detail: this.form.detail,
-          district: this.districtCode,
-          latitude: 0,
-          longitude: 0,
-          province: this.provinceCode,
-          remark: '',
-          town: this.townCode,
-          village: this.villageCode,
-          addressLevel: 5
-        }],
+        addressList: this.addressForm || [],
         customerName: this.form.customerName,
         customerState: this.form.customerState[0],
         customerType: this.form.customerType || 1,
@@ -535,7 +605,6 @@ export default {
     inputFile: function (newFile, oldFile) {
       if (newFile && oldFile && !newFile.active && oldFile.active) {
         // 获得相应数据
-        console.log('response', newFile.response)
         if (newFile.xhr) {
           //  获得响应状态码
           console.log('status', newFile.xhr.status)
@@ -649,7 +718,7 @@ export default {
       this.form.remark = data.operateInfo.operateRemark
       this.form.operateInfoId = data.operateInfo.operateInfoId
       const history = data.operateInfoDetails || []
-      for(let i = 0; i < history.length - 1; i++) {
+      for(let i = 0; i < history.length; i++) {
         i > 0 && this.uploadForm.push({
           operateYear: '',
           operateQuarter: [],
@@ -678,18 +747,40 @@ export default {
         }
       })
       const addressList = data.addressList || []
-      addressList.map(item => {
+      for(let i = 0; i < addressList.length; i++) {
+        i > 0 && this.addressForm.push({
+          address: '点击选择',
+          addressType : 2,
+          province: '',
+          city: '',
+          district: '',
+          town: '',
+          village: '',
+          latitude: 0,
+          longitude: 0,
+          remark: '',
+          addressLevel: 0,
+          detail: '',
+          style1: '',
+          style2: ''
+        })
+      }
+      addressList.map((item, index) => {
         if (item.addressType === 2) { // 经营地址
-          this.province = item.provinceName
-          this.provinceCode = item.province
-          this.city = item.cityName
-          this.cityCode = item.city
-          this.district = item.districtName
-          this.districtCode = item.district
-          this.town = item.townName
-          this.townCode = item.town
-          this.village = item.villageName
-          this.villageCode = item.village
+          this.addressForm[index].address = item.provinceName + item.cityName + item.districtName + item.townName + item.villageName
+          this.addressForm[index].province = item.province
+          this.addressForm[index].city = item.city
+          this.addressForm[index].district = item.district
+          this.addressForm[index].town = item.town
+          this.addressForm[index].village = item.village
+          let addressLevel = 0
+          item.province && (addressLevel = 1)
+          item.city && (addressLevel = 2)
+          item.district && (addressLevel = 3)
+          item.town && (addressLevel = 4)
+          item.village && (addressLevel = 5)
+          this.addressForm[index].addressLevel = addressLevel
+          this.addressForm[index].detail = item.detail
         }
       })
     },
@@ -899,6 +990,20 @@ export default {
   .checker-selected {
     background: #5895f7;
     color: #fff;
+  }
+  .add-address {
+    text-align: right;
+    font-size: 14px;
+    color: #5895f7;
+    padding-right: 10px;
+    padding-bottom: 5px;
+  }
+  .delete-address {
+    text-align: center;
+    font-size: 14px;
+    color: #f47983;
+    padding-right: 10px;
+    padding-bottom: 5px;
   }
   .add-group {
     position: absolute;

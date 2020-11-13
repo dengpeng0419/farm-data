@@ -173,6 +173,7 @@ export default {
   flex-direction: column;
   min-height: 100vh;
   position: relative;
+  padding-bottom: 32px;
   .add-farmer {
     position: fixed;
     z-index: 99999;

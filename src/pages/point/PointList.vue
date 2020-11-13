@@ -24,11 +24,11 @@
           <div class="logo-more" @touchstart="showAlert('功能开发中')">更多</div>
         </div>
       </div>
-      <loading v-model="showLoading" text="获取数据中"></loading>
+      <!-- <loading v-model="showLoading" text="获取数据中"></loading>
       <div v-if="list&&list.length>2">
         <load-more v-if="showloadmore" :tip="tip"></load-more>
         <load-more v-else :show-loading="false" :tip="tip"></load-more>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
@@ -173,6 +173,7 @@ export default {
   flex-direction: column;
   min-height: 100vh;
   position: relative;
+  padding-bottom: 32px;
   .add-farmer {
     z-index: 99999;
     position: fixed;
@@ -249,7 +250,7 @@ export default {
           flex-direction: column;
           justify-content: center;
           align-items: center;
-          margin-right: 20px;
+          margin-right: 10px;
           .icon {
             width: 30px;
             height: 30px;
