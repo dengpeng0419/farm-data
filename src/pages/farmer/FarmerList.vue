@@ -82,7 +82,7 @@ export default {
     },
     showAlert(msg) {
       this.$vux.alert.show({
-        title: '提示',
+        // title: '提示',
         content: msg,
         'mask-transition': '',
         onShow () {
@@ -239,7 +239,7 @@ export default {
         .left {
           align-items: center;
           .title, .address {
-            max-width: 300px;
+            max-width: 280px;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;

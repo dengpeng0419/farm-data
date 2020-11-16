@@ -121,13 +121,15 @@
           right-text="确定"
           title="选择位置"
           :show-bottom-border="false"
-          @on-click-left="showMap = false"
+          @on-click-left="closeMapAddrss"
           @on-click-right="chooseMapAddress"></popup-header>
         <baidu-map class="bmView" :scroll-wheel-zoom="true" :center="location" :zoom="zoom" @click="getLocationPoint">
           <bm-view style="width: 100%; height:100vh;"></bm-view>
           <bm-local-search :keyword="addressKeyword" :auto-viewport="true" style="display: none"></bm-local-search>
         </baidu-map>
-        <div style="position:absolute; bottom:0; left:0; width: 100%; background:#fff; padding:10px;">{{address}}</div>
+        <div style="position:absolute; bottom:0; left:0; width: 100%; background:#fff; padding:10px;font-size:14px">
+          {{address}}
+        </div>
       </popup>
     </div>
   </div>
@@ -306,6 +308,8 @@ export default {
       province: '点击选择',
       town: '',
       village: '',
+      longitude: 0,
+      latitude: 0,
       showMap: false
     }
   },
@@ -333,6 +337,8 @@ export default {
       this.province = '点击选择'
       this.town = ''
       this.village = ''
+      this.longitude = 0
+      this.latitude = 0
     },
     chooseAddress() {
       this.showAddress = false
@@ -342,6 +348,8 @@ export default {
       this.addressForm[this.openAddressLine].district = this.districtCode
       this.addressForm[this.openAddressLine].town = this.townCode
       this.addressForm[this.openAddressLine].village = this.villageCode
+      this.addressForm[this.openAddressLine].longitude = this.longitude
+      this.addressForm[this.openAddressLine].latitude = this.latitude
 
       this.province && (this.addressLevel = 1)
       this.city && (this.addressLevel = 2)
@@ -350,9 +358,34 @@ export default {
       this.village && (this.addressLevel = 5)
       this.addressForm[this.openAddressLine].addressLevel = this.addressLevel
     },
+    closeMapAddrss() {
+      this.showMap = false
+      this.address = ''
+      this.district = ''
+      this.city = ''
+      this.province = '点击选择'
+      this.town = ''
+      this.village = ''
+      this.longitude = 0
+      this.latitude = 0
+    },
     chooseMapAddress() {
       this.showMap = false
-      this.provinceCode && (this.form.address = [this.provinceCode, this.cityCode, this.districtCode])
+      this.addressForm[this.openAddressLine].address = this.province + this.city + this.district + this.town + this.village
+      this.addressForm[this.openAddressLine].province = this.provinceCode
+      this.addressForm[this.openAddressLine].city = this.cityCode
+      this.addressForm[this.openAddressLine].district = this.districtCode
+      this.addressForm[this.openAddressLine].town = this.townCode
+      this.addressForm[this.openAddressLine].village = this.villageCode
+      this.addressForm[this.openAddressLine].longitude = this.longitude
+      this.addressForm[this.openAddressLine].latitude = this.latitude
+
+      this.province && (this.addressLevel = 1)
+      this.city && (this.addressLevel = 2)
+      this.district && (this.addressLevel = 3)
+      this.town && (this.addressLevel = 4)
+      this.village && (this.addressLevel = 5)
+      this.addressForm[this.openAddressLine].addressLevel = this.addressLevel
     },
     addressOptionChange(value, label) {
       // console.log(value, label)
@@ -441,6 +474,7 @@ export default {
         ak: 'ZwTVu16RLXjhW7FHDjYt5HfMnR1dhFpR',
         location: this.lat + ',' + this.lng
       }).then((res)=>{
+        console.log(res)
         const data = res.result || {}
         this.address = data.formatted_address
         this.province = data.addressComponent.province
@@ -448,6 +482,8 @@ export default {
         this.district = data.addressComponent.district
         this.street = data.addressComponent.street
         this.town = data.addressComponent.town
+        this.longitude = data.location.lng
+        this.latitude = data.location.lat
 
         this.province && (this.addressLevel = 1)
         this.city && (this.addressLevel = 2)
@@ -456,8 +492,8 @@ export default {
         this.town && (this.addressLevel = 5)
 
         const adcode = data.addressComponent.adcode
-        this.provinceCode = adcode/10000
-        this.cityCode = adcode/100
+        this.provinceCode = adcode.substr(0,2)
+        this.cityCode = adcode.substr(0,4)
         this.districtCode = adcode
       })  
     },
